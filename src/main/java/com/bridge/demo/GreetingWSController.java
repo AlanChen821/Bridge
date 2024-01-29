@@ -1,5 +1,7 @@
-package com.bridge.entity.websocket;
+package com.bridge.demo;
 
+import com.bridge.entity.websocket.GreetingWS;
+import com.bridge.entity.websocket.HelloMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
