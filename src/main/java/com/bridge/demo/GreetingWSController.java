@@ -23,7 +23,7 @@ public class GreetingWSController {
     }
 
     @MessageMapping("/login")
-    @SendTo("/topic/login")
+    @SendTo("/topic/greetings")
     public GreetingWS login(HelloMessage message) throws Exception {
         Thread.sleep(100);
         Integer order = map.getOrDefault(message.getId(), null);
@@ -31,6 +31,17 @@ public class GreetingWSController {
             order = map.size();
             map.put(message.getId(), order);
         }
-        return new GreetingWS("Hello! You are the " + order + "th user.");
+
+        if (order != 3) {
+            return new GreetingWS("Welcome! You are the " + HtmlUtils.htmlEscape(order.toString()) + "th user.");
+        } else {
+            return start();
+//            return null;
+        }
+    }
+
+//    @SendTo("/topic/greetings")
+    public GreetingWS start() {
+        return new GreetingWS("Let's play!");
     }
 }
