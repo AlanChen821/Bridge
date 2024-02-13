@@ -11,6 +11,13 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe('/topic/login', (login) => {
         showLogin(JSON.parse(login.body).content);
     });
+    //
+    stompClient.subscribe('/topic/1/cards', (cards) => {
+        console.log('Receive message');
+        showGreeting("Let's play!");
+//        showGreeting(JSON.parse(cards.body).content);
+    });
+
 };
 
 stompClient.onWebSocketError = (error) => {
