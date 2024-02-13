@@ -23,10 +23,10 @@ public class GreetingWSController {
     }
 
     @MessageMapping("/hello")
-//    @SendTo("/topic/greetings")
+    @SendTo("/topic/greetings")
     public GreetingWS greeting(HelloMessage message) throws Exception {
         Thread.sleep(1000);
-        messageTemplate.convertAndSend("/topic/greetings", "Let's play!");
+//        messageTemplate.convertAndSend("/topic/greetings", "Let's play!");
         return new GreetingWS("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
     }
 
