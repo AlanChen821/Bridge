@@ -23,10 +23,10 @@ public class GreetingWSController {
     }
 
     @MessageMapping("/hello")
-//    @SendTo("/topic/greetings")
+    @SendTo("/topic/greetings")
     public GreetingWS greeting(HelloMessage message) throws Exception {
         Thread.sleep(1000);
-        messageTemplate.convertAndSend("/topic/greetings", "Let's play!");
+//        messageTemplate.convertAndSend("/topic/greetings", "Let's play!");
         return new GreetingWS("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
     }
 
@@ -39,7 +39,7 @@ public class GreetingWSController {
             order = map.size();
             map.put(message.getId(), order);
         }
-        messageTemplate.convertAndSend("/topic/greetings", "Let's play!");
+        messageTemplate.convertAndSend("/topic/greetings", "{\"message\":\"start\"}");
         if (order != 3) {
             System.out.println(order + "th player " + message.getId() + " has logged in.");
             return new GreetingWS("Welcome! You are the " + HtmlUtils.htmlEscape(order.toString()) + "th user.");
