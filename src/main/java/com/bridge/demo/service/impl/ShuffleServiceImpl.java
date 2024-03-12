@@ -15,39 +15,46 @@ import java.util.stream.IntStream;
 @Service
 public class ShuffleServiceImpl implements IShuffleService {
     @Override
-    public List<Player> shuffle(String player1Id, String player2Id, String player3Id, String player4Id) {
+    public List<Player> shuffle(String player1Id, String player2Id, String player3Id, String player4Id, Boolean canLower) {
         System.out.println("Start new game, shuffling...");
         List<Player> result = new ArrayList<>();
-//        do {
-        List<Integer> numbers = IntStream.rangeClosed(0, 51).boxed().collect(Collectors.toList());
-
-        Collections.shuffle(numbers);
-
-        List<Card> player0Cards = parseCards(numbers, 0);
         Player player0 = new Player();
-        player0.setId("Player0");
-        player0.setCards(player0Cards);
-        player0.setPoints(countPoints(player0Cards));
-
-        List<Card> player1Cards = parseCards(numbers, 1);
         Player player1 = new Player();
-        player1.setId("Player1");
-        player1.setCards(player1Cards);
-        player1.setPoints(countPoints(player1Cards));
-
-        List<Card> player2Cards = parseCards(numbers, 2);
         Player player2 = new Player();
-        player2.setId("Player2");
-        player2.setCards(player2Cards);
-        player2.setPoints(countPoints(player2Cards));
-
-        List<Card> player3Cards = parseCards(numbers, 3);
         Player player3 = new Player();
-        player3.setId("Player3");
-        player3.setCards(player3Cards);
-        player3.setPoints(countPoints(player3Cards));
+        do {
+            List<Integer> numbers = IntStream.rangeClosed(0, 51).boxed().collect(Collectors.toList());
 
-//        } while (true);
+            Collections.shuffle(numbers);
+
+            List<Card> player0Cards = parseCards(numbers, 0);
+            player0.setId("Player0");
+            player0.setCards(player0Cards);
+            player0.setPoints(countPoints(player0Cards));
+
+            List<Card> player1Cards = parseCards(numbers, 1);
+            player1.setId("Player1");
+            player1.setCards(player1Cards);
+            player1.setPoints(countPoints(player1Cards));
+
+            List<Card> player2Cards = parseCards(numbers, 2);
+            player2.setId("Player2");
+            player2.setCards(player2Cards);
+            player2.setPoints(countPoints(player2Cards));
+
+            List<Card> player3Cards = parseCards(numbers, 3);
+            player3.setId("Player3");
+            player3.setCards(player3Cards);
+            player3.setPoints(countPoints(player3Cards));
+
+            if (canLower || (player0.pass() && player1.pass() && player2.pass() && player3.pass())) {
+                System.out.println("Everyone has good cards, let the game begin.");
+                break;
+            } else {
+                System.out.println(String.format("Player1 : %d, Player2 : %d, Player3 : %d, Player4 : %d", player0.getPoints(), player1.getPoints(), player2.getPoints(), player3.getPoints()));
+                System.out.println("There're player(s) have cards which lower than 4 points, reshuffle.");
+            }
+        } while (true);
 
         result.add(player0);
         result.add(player1);
@@ -77,7 +84,6 @@ public class ShuffleServiceImpl implements IShuffleService {
         int totalPoints = 0;
         for (int i = 0; i < 13; i++) {
             int number = cards.get(i).getNumber();
-//                int point = c.getNumber() % 13 + 1;
             switch (number) {
                 case 1:
                     totalPoints += 4;

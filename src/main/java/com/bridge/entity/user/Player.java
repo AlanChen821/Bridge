@@ -14,4 +14,8 @@ public class Player {
     private List<Card> cards;
 
     private Integer points;
+
+    public Boolean pass() {
+        return points > 4 || cards.stream().anyMatch(c -> c.getNumber() == 1);
+    }
 }

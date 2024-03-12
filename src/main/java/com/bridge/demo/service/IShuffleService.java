@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface IShuffleService {
 
-    List<Player> shuffle(String player1Id, String player2Id, String player3Id, String player4Id);
+    List<Player> shuffle(String player1Id, String player2Id, String player3Id, String player4Id, Boolean canLower);
 }
