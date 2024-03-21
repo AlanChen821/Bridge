@@ -9,7 +9,7 @@ public enum PokerSuit {
     private int order;
 
     PokerSuit(int order) {
-
+        this.order = order;
     }
 
     public static PokerSuit getPokerSuit(int number) {
