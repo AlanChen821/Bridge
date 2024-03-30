@@ -1,6 +1,7 @@
 package com.bridge.demo.controller;
 
 import com.bridge.demo.service.PlayService;
+import com.bridge.entity.Game;
 import com.bridge.entity.Play;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class PlayerController {
     @PostMapping("/play")
     public ResponseEntity<Object> play(@RequestBody Play currentPlay) {
         try {
-            playService.play(currentPlay);
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            Game currentGame = playService.play(currentPlay);
+            return new ResponseEntity<>(currentGame, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println("Exception : " + e);
             return new ResponseEntity<>("play failed.", HttpStatus.BAD_REQUEST);
