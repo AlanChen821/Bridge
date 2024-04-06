@@ -1,17 +1,24 @@
 package com.bridge.demo.service.impl;
 
+import com.bridge.demo.DemoApplication;
 import com.bridge.demo.service.IBidService;
 import com.bridge.entity.Bid;
+import com.bridge.entity.Game;
 import com.bridge.entity.card.BidSuit;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Slf4j
 public class BidServiceImpl implements IBidService {
 
     private HashMap<String, List<Bid>> records = new HashMap<>();   //  todo : move to redis & db
+
+//    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public List<Bid> bid(Bid currentBid) throws Exception {
@@ -29,7 +36,14 @@ public class BidServiceImpl implements IBidService {
                     int lastValidBidIndex = bidHistory.indexOf(lastValidBid);
                     if (bidHistory.size() - lastValidBidIndex > 3) {
                         //  All other players have passed.
-                        System.out.println("All other players have passed, let the game begin!");
+                        log.info("All other players have passed, let the game begin!");
+                        Game game = Game.builder()
+                                .gameId(gameId)
+                                .trump(lastValidBid.getBidSuit())
+                                .level(lastValidBid.getNumber())
+                                .build();
+                        //  write into redis
+                        DemoApplication.insertRedis("game", game);
                     }
                 }
             } else {
