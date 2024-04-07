@@ -19,4 +19,5 @@ public class Game {
     private Integer level;
     private List<Player> players;
     private List<Round> rounds;
+    private List<Bid> bidHistory;
 }

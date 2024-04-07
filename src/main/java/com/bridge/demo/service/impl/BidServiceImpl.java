@@ -2,6 +2,7 @@ package com.bridge.demo.service.impl;
 
 import com.bridge.demo.DemoApplication;
 import com.bridge.demo.service.IBidService;
+import com.bridge.demo.utils.RedisUtils;
 import com.bridge.entity.Bid;
 import com.bridge.entity.Game;
 import com.bridge.entity.card.BidSuit;
@@ -18,8 +19,6 @@ public class BidServiceImpl implements IBidService {
 
     private HashMap<String, List<Bid>> records = new HashMap<>();   //  todo : move to redis & db
 
-//    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
     public List<Bid> bid(Bid currentBid) throws Exception {
         String gameId = currentBid.getGameId();
@@ -30,6 +29,10 @@ public class BidServiceImpl implements IBidService {
             Bid lastValidBid = Lists.reverse(bidHistory).stream().filter(b -> !b.getBidSuit().isPass()).findFirst().orElseThrow(Exception::new);
             Boolean isValid = currentBid.validate(lastValidBid);
             if (isValid) {
+                Game game = Game.builder()
+                        .gameId(gameId)
+                        .bidHistory(bidHistory)
+                        .build();;
                 bidHistory.add(currentBid);
                 //  check whether the game can begin.
                 if (BidSuit.PASS.equals(currentBid.getBidSuit())) {
@@ -37,15 +40,12 @@ public class BidServiceImpl implements IBidService {
                     if (bidHistory.size() - lastValidBidIndex > 3) {
                         //  All other players have passed.
                         log.info("All other players have passed, let the game begin!");
-                        Game game = Game.builder()
-                                .gameId(gameId)
-                                .trump(lastValidBid.getBidSuit())
-                                .level(lastValidBid.getNumber())
-                                .build();
-                        //  write into redis
-                        DemoApplication.insertRedis("game", game);
+                        game.setTrump(lastValidBid.getBidSuit());
+                        game.setLevel(lastValidBid.getNumber());
                     }
                 }
+                //  write into redis
+                RedisUtils.insertRedis("game", game);
             } else {
                 throw new Exception();
             }
@@ -53,7 +53,13 @@ public class BidServiceImpl implements IBidService {
             if (currentBid.getBidSuit().isPass()) {
                 throw new Exception();
             }
+            //  write into redis
             bidHistory = new ArrayList<>(Arrays.asList(currentBid));
+            Game game = Game.builder()
+                    .gameId(gameId)
+                    .bidHistory(bidHistory)
+                    .build();
+            RedisUtils.insertRedis("game", game);
         }
         records.put(gameId, bidHistory);
         return bidHistory;
