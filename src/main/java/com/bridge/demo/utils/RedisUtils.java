@@ -1,11 +1,13 @@
 package com.bridge.demo.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,4 +33,16 @@ public class RedisUtils {
             log.warn("Insert into redis key : {} failed. Message : {}", key, ex.getMessage(), ex);
         }
     }
+
+    public static <T> T getFromRedis(String key, String field, Type clazz) {
+        try (Jedis jedis = pool.getResource()) {
+            String jsonVal = jedis.hget(key, field);
+            T object = JsonUtils.deserialize(jsonVal, clazz);
+            return object;
+        } catch (Exception ex) {
+            log.warn("Get key {} & field {} to class {} from Redis failed.", key, field, clazz);
+            return null;
+        }
+    }
+
 }
