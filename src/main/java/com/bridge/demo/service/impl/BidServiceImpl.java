@@ -17,22 +17,23 @@ import java.util.*;
 @Slf4j
 public class BidServiceImpl implements IBidService {
 
-    private HashMap<String, List<Bid>> records = new HashMap<>();   //  todo : move to redis & db
-
     @Override
     public List<Bid> bid(Bid currentBid) throws Exception {
         String gameId = currentBid.getGameId();
+        Game game = null;
         List<Bid> bidHistory;
-        if (records.containsKey(gameId)) {  //  此局遊戲已存在, 查出過去的 bid history 做判斷並更新
-            bidHistory = records.get(gameId);
+        if (RedisUtils.checkKeyAndField("game", gameId)) {  //  此局遊戲已存在, 查出過去的 bid history 做判斷並更新
+            game = RedisUtils.getFromRedis("game", gameId, Game.class);
+            bidHistory = game.getBidHistory();
+
             //  查出上一次的有效叫牌(PASS 以外), 若無此叫牌則拋 exception
-            Bid lastValidBid = Lists.reverse(bidHistory).stream().filter(b -> !b.getBidSuit().isPass()).findFirst().orElseThrow(Exception::new);
+            Bid lastValidBid = Lists.reverse(bidHistory)
+                    .stream()
+                    .filter(b -> !b.getBidSuit().isPass())
+                    .findFirst()
+                    .orElseThrow(Exception::new);
             Boolean isValid = currentBid.validate(lastValidBid);
             if (isValid) {
-                Game game = Game.builder()
-                        .gameId(gameId)
-                        .bidHistory(bidHistory)
-                        .build();;
                 bidHistory.add(currentBid);
                 //  check whether the game can begin.
                 if (BidSuit.PASS.equals(currentBid.getBidSuit())) {
@@ -44,24 +45,22 @@ public class BidServiceImpl implements IBidService {
                         game.setLevel(lastValidBid.getNumber());
                     }
                 }
-                //  write into redis
-                RedisUtils.insertRedis("game", game);
             } else {
+                log.warn("Bid {} is invalid.", currentBid);
                 throw new Exception();
             }
         } else {    //  此局遊戲尚未存在, 為第一次叫牌, 直接新增 bid history.
             if (currentBid.getBidSuit().isPass()) {
                 throw new Exception();
             }
-            //  write into redis
             bidHistory = new ArrayList<>(Arrays.asList(currentBid));
-            Game game = Game.builder()
+            game = Game.builder()
                     .gameId(gameId)
                     .bidHistory(bidHistory)
                     .build();
-            RedisUtils.insertRedis("game", game);
         }
-        records.put(gameId, bidHistory);
+        //  write into redis
+        RedisUtils.insertRedis("game", gameId, game);
         return bidHistory;
     }
 }

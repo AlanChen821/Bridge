@@ -22,6 +22,16 @@ public class RedisUtils {
         log.debug("Construct RedisUtils.,");
     }
 
+    public static Boolean checkKeyAndField(String key, String field) {
+        try (Jedis jedis = pool.getResource()) {
+            Map<String, String> map = jedis.hgetAll(key);
+            if (null != map) {
+                return map.containsKey(field);
+            }
+            return false;
+        }
+    }
+
     public static void insertRedis(String key, Object target) {
         try (Jedis jedis = pool.getResource()) {
             Map<String, String> map = new HashMap<>();
@@ -31,6 +41,13 @@ public class RedisUtils {
             jedis.hset(key, map);
         } catch (Exception ex) {
             log.warn("Insert into redis key : {} failed. Message : {}", key, ex.getMessage(), ex);
+        }
+    }
+
+    public static void insertRedis(String key, String field, Object object) {
+        try (Jedis jedis = pool.getResource()) {
+            String jsonVal = JsonUtils.serialize(object);
+            jedis.hset(key, field, jsonVal);
         }
     }
 
