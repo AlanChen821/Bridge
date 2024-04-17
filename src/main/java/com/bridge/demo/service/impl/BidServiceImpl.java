@@ -1,5 +1,6 @@
 package com.bridge.demo.service.impl;
 
+import com.bridge.RedisConstants;
 import com.bridge.demo.DemoApplication;
 import com.bridge.demo.service.IBidService;
 import com.bridge.demo.utils.RedisUtils;
@@ -20,10 +21,11 @@ public class BidServiceImpl implements IBidService {
     @Override
     public List<Bid> bid(Bid currentBid) throws Exception {
         String gameId = currentBid.getGameId();
-        Game game = null;
+        Game game;
         List<Bid> bidHistory;
-        if (RedisUtils.checkKeyAndField("game", gameId)) {  //  此局遊戲已存在, 查出過去的 bid history 做判斷並更新
-            game = RedisUtils.getFromRedis("game", gameId, Game.class);
+        String gameKey = RedisConstants.getGameKey();
+        if (RedisUtils.checkKeyAndField(gameKey, gameId)) {  //  此局遊戲已存在, 查出過去的 bid history 做判斷並更新
+            game = RedisUtils.getFromRedis(gameKey, gameId, Game.class);
             bidHistory = game.getBidHistory();
 
             //  查出上一次的有效叫牌(PASS 以外), 若無此叫牌則拋 exception
@@ -60,7 +62,7 @@ public class BidServiceImpl implements IBidService {
                     .build();
         }
         //  write into redis
-        RedisUtils.insertRedis("game", gameId, game);
+        RedisUtils.insertRedis(gameKey, gameId, game);
         return bidHistory;
     }
 }
