@@ -50,15 +50,10 @@ public class GreetingWSController {
     }
 
     @SendTo("/topic/greetings")
-//    @SendTo("/topic/1/cards")
     public void start() {
         System.out.println("Let's play!");
-//        messageTemplate.convertAndSend("/topic/1/cards", "Let's play!");
-        messageTemplate.convertAndSend("/topic/greetings", "Let's play!");
-        System.out.println("Has sent.");
+        String destination = "/topic/cards/1";
+        destination = "/topic/2/cards";
+        messageTemplate.convertAndSend(destination, "Let's play! Here's your cards:");
     }
-//    @SendTo("/topic/1/cards")
-//    public GreetingWS start() {
-//        return new GreetingWS("Let's play!");
-//    }
 }
