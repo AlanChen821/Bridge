@@ -3,10 +3,12 @@ package com.bridge.demo.service.impl;
 
 import com.bridge.RedisConstants;
 import com.bridge.demo.service.ICallService;
+import com.bridge.demo.utils.LocalDateTimeUtils;
 import com.bridge.demo.utils.RedisUtils;
 import com.bridge.entity.Call;
 import com.bridge.entity.Game;
 import com.bridge.entity.card.CallType;
+import com.bridge.enumeration.GameStatus;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ import java.util.*;
 public class CallServiceImpl implements ICallService {
 
     @Override
-    public List<Call> call(Call currentCall) throws Exception {
+    public Game call(Call currentCall) throws Exception {
         String gameId = currentCall.getGameId();
         Game game;
         List<Call> callHistory;
@@ -30,7 +32,7 @@ public class CallServiceImpl implements ICallService {
             //  查出上一次的有效叫牌(PASS 以外), 若無此叫牌則拋 exception
             Call lastValidCall = Lists.reverse(callHistory)
                     .stream()
-                    .filter(b -> !b.getCallType().isPass())
+                    .filter(call -> !call.getCallType().isPass())
                     .findFirst()
                     .orElseThrow(Exception::new);
             Boolean isValid = currentCall.validate(lastValidCall);
@@ -44,6 +46,7 @@ public class CallServiceImpl implements ICallService {
                         log.info("All other players have passed, let the game begin!");
                         game.setTrump(lastValidCall.getCallType());
                         game.setLevel(lastValidCall.getNumber());
+                        game.setStatus(GameStatus.PLAYING);
                     }
                 }
             } else {
@@ -58,10 +61,13 @@ public class CallServiceImpl implements ICallService {
             game = Game.builder()
                     .gameId(gameId)
                     .callHistory(callHistory)
+                    .status(GameStatus.CALLING)
+                    .createTime(LocalDateTimeUtils.getStringOfNow())
                     .build();
         }
         //  write into redis
+        game.setUpdateTime(LocalDateTimeUtils.getStringOfNow());
         RedisUtils.insertRedis(gameKey, gameId, game);
-        return callHistory;
+        return game;
     }
 }
