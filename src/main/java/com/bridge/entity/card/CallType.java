@@ -3,7 +3,7 @@ package com.bridge.entity.card;
 import lombok.Getter;
 
 @Getter
-public enum BidSuit {
+public enum CallType {
     NO_KING(5),
     SPADE(4),
     HEART(3),
@@ -13,7 +13,7 @@ public enum BidSuit {
 
     private int level;
 
-    BidSuit(int level) {
+    CallType(int level) {
         this.level = level;
     }
 

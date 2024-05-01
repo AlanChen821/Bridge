@@ -1,7 +1,6 @@
 package com.bridge.entity;
 
-import com.bridge.entity.card.BidSuit;
-import com.bridge.entity.card.PokerSuit;
+import com.bridge.entity.card.CallType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,27 +8,27 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Bid {
+public class Call {
     private String gameId; //  todo : both of gameId & playerId will be moved into token or other place.
 
     private String playerId;
 
     @NotNull
-    private BidSuit bidSuit;
+    private CallType callType;
 
     @NotNull
     private Integer number;
 
-    public Boolean validate(Bid lastBid) {
-        if (BidSuit.PASS.equals(this.bidSuit)) {
+    public Boolean validate(Call lastCall) {
+        if (CallType.PASS.equals(this.callType)) {
             return true;
         } else {
-            if (lastBid.getNumber() < this.getNumber()) {
+            if (lastCall.getNumber() < this.getNumber()) {
                 return true;
-            } else if (lastBid.getNumber() > this.getNumber()) {
+            } else if (lastCall.getNumber() > this.getNumber()) {
                 return false;
-            } else {    //  lastBid.getNumber() == this.getNumber()
-                if (lastBid.getBidSuit().getLevel() >= this.getBidSuit().getLevel()) {
+            } else {    //  lastCall.getNumber() == this.getNumber()
+                if (lastCall.getCallType().getLevel() >= this.getCallType().getLevel()) {
                     return false;
                 }
                 return true;
