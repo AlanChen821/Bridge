@@ -1,27 +1,3 @@
-//const stompClient2 = new StompJs.Client({
-//    brokerURL: 'ws://localhost:8080/gs-guide-websocket'
-//});
-//
-//stompClient.onConnect = (frame) => {
-//    setConnected(true);
-//    console.log('Connected: ' + frame);
-//    stompClient.subscribe('/topic/greetings', (greeting) => {
-//        showGreeting(JSON.parse(greeting.body).content);
-//    });
-//    stompClient.subscribe('/topic/login', (login) => {
-//        showLogin(JSON.parse(login.body).content);
-//    });
-//};
-//
-//stompClient.onWebSocketError = (error) => {
-//    console.error('Error with websocket', error);
-//};
-//
-//stompClient.onStompError = (frame) => {
-//    console.error('Broker reported error: ' + frame.headers['message']);
-//    console.error('Additional details: ' + frame.body);
-//};
-
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
@@ -34,46 +10,6 @@ function setConnected(connected) {
     $("#greetings").html("");
     $("#logins").html("");
 }
-
-//function connect() {
-//    stompClient.activate();
-//}
-//
-//function disconnect() {
-//    stompClient.deactivate();
-//    setConnected(false);
-//    console.log("Disconnected");
-//}
-//
-//function sendName() {
-//    showGreeting("click sendName");
-//
-//    stompClient.onConnect = (frame) => {
-//        setConnected(true);
-//        console.log('Connected: ' + frame);
-//
-//        const destination = '/topic/cards/1';
-//        destination = '/topic/2/cards';
-//
-//        stompClient.subscribe(destination, (cards) => {
-//            console.log('Receive player\'s cards');
-//            showGreeting("Receive player\'s cards");
-//        })
-//    };
-//
-//    stompClient.publish({
-//        destination: "/app/hello",
-//        body: JSON.stringify({'name': $("#name").val()})
-//    });
-//}
-//
-//function login() {
-//
-//    stompClient.publish({
-//        destination: "/app/login",
-//        body: JSON.stringify({'id': $("#id").val()})
-//    });
-//}
 
 async function callLogin() {
 
@@ -92,9 +28,8 @@ async function callLogin() {
     const data = await response.json();
 
 //    const destination = 'ws://localhost:8080/gs-guide-websocket/topic/cards/' + data; // Use userId obtained from login;
-    const destination = '/app/cards/' + data;
+    const destination = '/app/cards/1';
     console.log("destination : " + destination)
-//    showGreeting("receive data : " + data);
 
     // Initialize WebSocket connection
     const socket = new WebSocket('ws://localhost:8080/gs-guide-websocket');
@@ -104,31 +39,28 @@ async function callLogin() {
         console.log('WebSocket onopen');
 
         // Initialize Stomp Client
-        const stompClient2 = new StompJs.Client({
-            brokerURL: 'ws://localhost:8080/gs-guide-websocket'
-        });
-//        const stompClient2 = Stomp.Client(socket); // Correct initialization method
-//        const stompClient2 = Stomp.over(socket);
+//        const stompClient = new StompJs.Client({
+//            brokerURL: 'ws://localhost:8080/gs-guide-websocket'
+//        });
+        const stompClient = Stomp.over(socket);
+//        const stompClient = Stomp.Client(socket);
 
         // Subscribe to the WebSocket channel
-//        showGreeting("Try to subscribe " + destination);
+//        stompClient.activate();
+//        stompClient.onConnect = function(frame) {
+//        stompClient.connect = function(frame) {
+        stompClient.connect({}, function(frame) {
+            showGreeting("stompClient connect.");
+            console.log('stompClient connect: ' + frame);
 
-        stompClient2.activate();
-        stompClient2.onConnect = function(frame) {
-//        stompClient2.connect = function(frame) {
-//        stompClient2.connect({}, function(frame) {
-            showGreeting("StompClient2 connect.");
-            console.log('StompClient2 connect: ' + frame);
-
-            stompClient2.subscribe(destination, function(message) {
+            stompClient.subscribe(destination, function(message) {
                 console.log("Received message : " + message.body);
                 showGreeting("Receive message from : " + destination);
                 // Process incoming cards data here
             });
+        });
 
-        };
-
-        stompClient2.onmessage = function(event) {
+        stompClient.onmessage = function(event) {
             console.log("message" + event);
             const message = event.data;
         };
@@ -139,7 +71,7 @@ async function callLogin() {
         };
 
     };
-//    stompClient2.activate();
+//    stompClient.activate();
 
     socket.onerror = function(error) {
         console.error('WebSocket Error:', error);
@@ -158,13 +90,6 @@ async function callLogin() {
 //    console.log('User ID:', userId);
 //    return userId;
 }
-
-// Usage:
-//callLogin().then(userId => {
-//    // Perform actions after successful login, such as subscribing to WebSocket
-//}).catch(error => {
-//    console.error('Login error:', error);
-//});
 
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
