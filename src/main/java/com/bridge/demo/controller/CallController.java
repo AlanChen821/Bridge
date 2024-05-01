@@ -2,6 +2,7 @@ package com.bridge.demo.controller;
 
 import com.bridge.demo.service.ICallService;
 import com.bridge.entity.Call;
+import com.bridge.entity.Game;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class CallController {
     @PostMapping("/call")
     public ResponseEntity<Object> call(@Valid @RequestBody Call call) {
         try {
-            List<Call> success = callService.call(call);
+            Game success = callService.call(call);
             return new ResponseEntity<>(success, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println("exception : " + e);
