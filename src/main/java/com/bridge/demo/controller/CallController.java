@@ -1,7 +1,7 @@
 package com.bridge.demo.controller;
 
-import com.bridge.demo.service.IBidService;
-import com.bridge.entity.Bid;
+import com.bridge.demo.service.ICallService;
+import com.bridge.entity.Call;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,23 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class BidController {
+public class CallController {
 
     @Autowired
-    private IBidService bidService;
+    private ICallService callService;
 
-    public BidController() {
-//        System.out.println("initialize BidController.");
-    }
-
-    @PostMapping("/bid")
-    public ResponseEntity<Object> bid(@Valid @RequestBody Bid bid) {
+    @PostMapping("/call")
+    public ResponseEntity<Object> call(@Valid @RequestBody Call call) {
         try {
-            List<Bid> success = bidService.bid(bid);
+            List<Call> success = callService.call(call);
             return new ResponseEntity<>(success, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println("exception : " + e);
-            return new ResponseEntity<>("bid failed.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Call failed.", HttpStatus.BAD_REQUEST);
         }
     }
 }

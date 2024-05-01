@@ -1,6 +1,6 @@
 package com.bridge.entity;
 
-import com.bridge.entity.card.BidSuit;
+import com.bridge.entity.card.CallType;
 import com.bridge.entity.user.Player;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Game {
     private String gameId;
-    private BidSuit trump;
+    private CallType trump;
     private Integer level;
     private List<Player> players;
     private List<Round> rounds;
-    private List<Bid> bidHistory;
+    private List<Call> callHistory;
 }
