@@ -2,7 +2,7 @@ package com.bridge;
 
 public class RedisConstants {
 
-    public static String getGameKey() {
-        return "game";
-    }
+    public static final String GAME_KEY = "game";
+
+    public static final String PLAYER_KEY = "player";
 }

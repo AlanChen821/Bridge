@@ -11,6 +11,8 @@ import java.util.List;
 public class Player {
     private String id;
 
+    private String account;
+
     private List<Card> cards;
 
     private Integer points;

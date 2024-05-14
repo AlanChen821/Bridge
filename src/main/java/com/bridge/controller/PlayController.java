@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class PlayerController {
+public class PlayController {
 
     private PlayService playService;
 
-    public PlayerController(PlayService playService) {
+    public PlayController(PlayService playService) {
         this.playService = playService;
     }
 
