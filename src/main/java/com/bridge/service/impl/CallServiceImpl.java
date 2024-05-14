@@ -24,7 +24,7 @@ public class CallServiceImpl implements ICallService {
         String gameId = currentCall.getGameId();
         Game game;
         List<Call> callHistory;
-        String gameKey = RedisConstants.getGameKey();
+        String gameKey = RedisConstants.GAME_KEY;
         if (RedisUtils.checkKeyAndField(gameKey, gameId)) {  //  此局遊戲已存在, 查出過去的 bid history 做判斷並更新
             game = RedisUtils.getFromRedis(gameKey, gameId, Game.class);
             callHistory = game.getCallHistory();

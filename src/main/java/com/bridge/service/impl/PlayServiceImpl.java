@@ -18,7 +18,7 @@ public class PlayServiceImpl implements PlayService {
 
     @Override
     public Game play(Play currentPlay) throws Exception {
-        String gameKey = RedisConstants.getGameKey();
+        String gameKey = RedisConstants.GAME_KEY;
         String gameId = currentPlay.getGameId();
         if (RedisUtils.checkKeyAndField(gameKey, gameId)) {
             Game targetGame = RedisUtils.getFromRedis(gameKey, gameId, Game.class);
