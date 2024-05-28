@@ -18,6 +18,7 @@ public class LoginServiceImpl implements ILoginService {
         log.info("Player {} has logged in.", player.getAccount());
         //  TODO : find whether there's an empty room already, if there isn't, create a new one.
         //  otherwise, attend to the existing room.
+
         return encodedAccount;
     }
 }
