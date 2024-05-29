@@ -1,6 +1,6 @@
-package com.bridge.demo.controller;
+package com.bridge.controller;
 
-import com.bridge.demo.service.PlayService;
+import com.bridge.service.PlayService;
 import com.bridge.entity.Game;
 import com.bridge.entity.Play;
 import org.springframework.http.HttpStatus;

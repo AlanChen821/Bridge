@@ -1,6 +1,6 @@
 package com.bridge.entity;
 
-import com.bridge.demo.utils.LocalDateTimeUtils;
+import com.bridge.utils.LocalDateTimeUtils;
 import com.bridge.entity.card.CallType;
 import com.bridge.entity.user.Player;
 import com.bridge.enumeration.GameStatus;

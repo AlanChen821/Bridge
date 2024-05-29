@@ -1,4 +1,4 @@
-package com.bridge.demo.service;
+package com.bridge.service;
 
 import com.bridge.entity.Call;
 import com.bridge.entity.Game;

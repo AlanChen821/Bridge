@@ -1,8 +1,6 @@
-package com.bridge.demo.controller;
+package com.bridge.controller;
 
-import com.bridge.demo.service.IShuffleService;
-import com.bridge.entity.Greeting;
-import com.bridge.entity.card.Card;
+import com.bridge.service.IShuffleService;
 import com.bridge.entity.user.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

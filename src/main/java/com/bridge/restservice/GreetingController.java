@@ -1,4 +1,4 @@
-package com.bridge.demo.restservice;
+package com.bridge.restservice;
 
 import com.bridge.entity.Greeting;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,6 @@
-package com.bridge.demo.utils;
+package com.bridge.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
