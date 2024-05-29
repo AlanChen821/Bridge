@@ -17,8 +17,14 @@ public class RedisUtils {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public RedisUtils() {
-        log.debug("Construct RedisUtils.,");
+//    public RedisUtils() {
+//        log.debug("Construct RedisUtils.");
+//    }
+
+    public static Boolean checkKey(String key) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.exists(key);
+        }
     }
 
     public static Boolean checkKeyAndField(String key, String field) {
@@ -47,6 +53,22 @@ public class RedisUtils {
         try (Jedis jedis = pool.getResource()) {
             String jsonVal = JsonUtils.serialize(object);
             jedis.hset(key, field, jsonVal);
+        }
+    }
+
+    public static <T> Map<String, T> getFromRedis(String key, Type clazz) {
+        try (Jedis jedis = pool.getResource()) {
+            Map<String, String> map = jedis.hgetAll(key);
+            Map<String, T> result = new HashMap<>();
+            map.forEach((key1, val) -> {
+                T target = JsonUtils.deserialize(val, clazz);
+                result.put(key1, target);
+            });
+            return result;
+//            return (Map<String, T>) map;
+        } catch (Exception ex) {
+            log.warn("Get key {} to class {} from Redis failed.", key, clazz);
+            return null;
         }
     }
 
