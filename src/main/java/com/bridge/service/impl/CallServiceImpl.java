@@ -1,10 +1,10 @@
 
-package com.bridge.demo.service.impl;
+package com.bridge.service.impl;
 
 import com.bridge.RedisConstants;
-import com.bridge.demo.service.ICallService;
-import com.bridge.demo.utils.LocalDateTimeUtils;
-import com.bridge.demo.utils.RedisUtils;
+import com.bridge.service.ICallService;
+import com.bridge.utils.LocalDateTimeUtils;
+import com.bridge.utils.RedisUtils;
 import com.bridge.entity.Call;
 import com.bridge.entity.Game;
 import com.bridge.entity.card.CallType;

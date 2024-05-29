@@ -1,6 +1,6 @@
-package com.bridge.demo.controller;
+package com.bridge.controller;
 
-import com.bridge.demo.service.ICallService;
+import com.bridge.service.ICallService;
 import com.bridge.entity.Call;
 import com.bridge.entity.Game;
 import jakarta.validation.Valid;

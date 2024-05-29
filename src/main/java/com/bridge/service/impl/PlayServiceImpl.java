@@ -1,8 +1,8 @@
-package com.bridge.demo.service.impl;
+package com.bridge.service.impl;
 
 import com.bridge.RedisConstants;
-import com.bridge.demo.service.PlayService;
-import com.bridge.demo.utils.RedisUtils;
+import com.bridge.service.PlayService;
+import com.bridge.utils.RedisUtils;
 import com.bridge.entity.Game;
 import com.bridge.entity.Play;
 import com.bridge.entity.Round;
@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 @Service

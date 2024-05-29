@@ -1,6 +1,6 @@
-package com.bridge.demo.service.impl;
+package com.bridge.service.impl;
 
-import com.bridge.demo.service.IShuffleService;
+import com.bridge.service.IShuffleService;
 import com.bridge.entity.card.Card;
 import com.bridge.entity.card.PokerSuit;
 import com.bridge.entity.user.Player;

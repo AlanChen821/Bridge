@@ -1,4 +1,4 @@
-package com.bridge.demo.utils;
+package com.bridge.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
