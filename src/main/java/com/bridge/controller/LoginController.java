@@ -1,5 +1,6 @@
 package com.bridge.controller;
 
+import com.bridge.entity.Game;
 import com.bridge.entity.user.Player;
 import com.bridge.service.ILoginService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,7 @@ public class LoginController {
     }
 
     @PostMapping("/loginAsGuest")
-    public String loginAsGuest(@RequestBody Player player) {
+    public Game loginAsGuest(@RequestBody Player player) {
         return loginService.loginAsGuest(player);
     }
 }

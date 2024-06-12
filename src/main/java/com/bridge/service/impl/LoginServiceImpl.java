@@ -18,33 +18,35 @@ import java.util.Optional;
 public class LoginServiceImpl implements ILoginService {
 
     @Override
-    public String loginAsGuest(Player player) {
-        String account = player.getAccount();
-        String encodedAccount = Base64.getEncoder().encodeToString(account.getBytes());
+    public Game loginAsGuest(Player player) {
+        Game targetGame;
+//        String account = player.getAccount();
+//        String encodedAccount = Base64.getEncoder().encodeToString(account.getBytes());
         log.info("Player {} has logged in.", player.getAccount());
-        //  check whether there's an waiting room, if there isn't, create a new one.
+        //  check whether there's a waiting room, if there isn't, create a new one.
         String gameKey = RedisConstants.GAME_KEY;
         if (RedisUtils.checkKey(gameKey)) {
             Map<String, Game> gameMap = RedisUtils.getFromRedis(gameKey, Game.class);
             Optional<Map.Entry<String, Game>> firstWaitingGame = gameMap.entrySet().stream().filter(entry -> GameStatus.WAITING.equals(entry.getValue().getStatus())).findFirst();
             if (firstWaitingGame.isPresent()) {
-                Game targetGame = firstWaitingGame.get().getValue();
+                targetGame = firstWaitingGame.get().getValue();
                 targetGame.addNewPlayer(player);
                 RedisUtils.insertRedis(gameKey, targetGame.getGameId(), targetGame);
             } else {
-                this.createNewGame(player);
+                 targetGame = this.createNewGame(player);
             }
         } else {
             //  otherwise, attend to the existing room.
-            this.createNewGame(player);
+            targetGame = this.createNewGame(player);
         }
 
-        return encodedAccount;
+        return targetGame;
     }
 
-    private void createNewGame(Player firstPlayer) {
+    private Game createNewGame(Player firstPlayer) {
         String gameKey = RedisConstants.GAME_KEY;
         Game newGame = new Game(firstPlayer);
         RedisUtils.insertRedis(gameKey, newGame.getGameId(), newGame);
+        return newGame;
     }
 }
