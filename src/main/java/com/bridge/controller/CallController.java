@@ -26,6 +26,15 @@ public class CallController {
             @Valid @RequestBody Call call) {
         try {
             List<String> tokens = headers.get("token");
+            if (null == tokens || tokens.isEmpty()) {
+                return new ResponseEntity<>("No token.", HttpStatus.FORBIDDEN);
+            }
+            List<String> gameId = headers.get("gameId");
+            if (null == gameId || gameId.isEmpty()) {
+                return new ResponseEntity<>("No gameId.", HttpStatus.FORBIDDEN);
+            }
+            call.setPlayerId(tokens.get(0));
+            call.setGameId(gameId.get(0));
             Game success = callService.call(call);
             return new ResponseEntity<>(success, HttpStatus.OK);
         } catch (Exception e) {
