@@ -4,12 +4,15 @@ import com.bridge.RedisConstants;
 import com.bridge.entity.Game;
 import com.bridge.entity.user.Player;
 import com.bridge.enumeration.GameStatus;
+import com.bridge.mapper.GameMapper;
 import com.bridge.service.ILoginService;
 import com.bridge.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,9 +20,15 @@ import java.util.Optional;
 @Slf4j
 public class LoginServiceImpl implements ILoginService {
 
+    @Autowired
+    private GameMapper gameMapper;
+
     @Override
     public Game loginAsGuest(Player player) {
         Game targetGame;
+
+        List<Game> list = gameMapper.getList();
+
 //        String account = player.getAccount();
 //        String encodedAccount = Base64.getEncoder().encodeToString(account.getBytes());
         log.info("Player {} has logged in.", player.getAccount());
