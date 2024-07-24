@@ -6,16 +6,12 @@ import com.bridge.entity.user.Player;
 import com.bridge.enumeration.GameStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -27,7 +23,7 @@ import java.util.List;
 public class Game {
 
     public Game() {
-        this.gameId = "1";
+        this.id = "1";
         this.players = new ArrayList<>();
         this.createTime = LocalDateTimeUtils.getStringOfNow();
         this.status = GameStatus.WAITING;
@@ -41,15 +37,24 @@ public class Game {
     }
 
     @Id
-    private String gameId;
+    private String id;
 
     private CallType trump;
     private Integer level;
+
+    @Transient
     private List<Player> players;
+
+    @Transient
     private List<Round> rounds;
+
+    @Transient
     private List<Call> callHistory;
+
     private GameStatus status;
     private String createTime;
+
+    @Transient
     private String updateTime;
 
     public void addNewPlayer(Player newPlayer) {

@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,7 +33,7 @@ public class LoginServiceImpl implements ILoginService {
     public Game loginAsGuest(Player player) {
         Game targetGame;
 
-        gameRepository.getById(1L);
+//        targetGame = gameRepository.getById(1L);
 
 //        int result = gameParameterJdbcTemplate.queryForObject("SELECT * from game", Game.class);
 
@@ -52,13 +50,15 @@ public class LoginServiceImpl implements ILoginService {
             if (firstWaitingGame.isPresent()) {
                 targetGame = firstWaitingGame.get().getValue();
                 targetGame.addNewPlayer(player);
-                RedisUtils.insertRedis(gameKey, targetGame.getGameId(), targetGame);
+                RedisUtils.insertRedis(gameKey, targetGame.getId(), targetGame);
             } else {
                  targetGame = this.createNewGame(player);
+                 this.gameRepository.saveAndFlush(targetGame);
             }
         } else {
             //  otherwise, attend to the existing room.
             targetGame = this.createNewGame(player);
+            this.gameRepository.saveAndFlush(targetGame);
         }
 
         return targetGame;
@@ -67,7 +67,7 @@ public class LoginServiceImpl implements ILoginService {
     private Game createNewGame(Player firstPlayer) {
         String gameKey = RedisConstants.GAME_KEY;
         Game newGame = new Game(firstPlayer);
-        RedisUtils.insertRedis(gameKey, newGame.getGameId(), newGame);
+        RedisUtils.insertRedis(gameKey, newGame.getId(), newGame);
         return newGame;
     }
 }
