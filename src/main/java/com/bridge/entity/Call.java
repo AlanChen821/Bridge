@@ -4,11 +4,13 @@ import com.bridge.entity.card.CallType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
 //import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Setter
-public class Call {
+public class Call implements Serializable {
     private String gameId; //  todo : both of gameId & playerId will be moved into token or other place.
 
     private String playerId;
