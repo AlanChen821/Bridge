@@ -12,6 +12,8 @@ public class BridgeApplication {
 
     public static void main(String[] args) {
 		SpringApplication.run(BridgeApplication.class, args);
+
+//		jdbcTemplate
 	}
 
 }

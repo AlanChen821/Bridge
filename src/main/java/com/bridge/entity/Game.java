@@ -4,6 +4,8 @@ import com.bridge.utils.LocalDateTimeUtils;
 import com.bridge.entity.card.CallType;
 import com.bridge.entity.user.Player;
 import com.bridge.enumeration.GameStatus;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +21,8 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@Entity
+//@Table
 //@NoArgsConstructor
 public class Game {
 
@@ -36,7 +40,9 @@ public class Game {
         this.players.add(firstPlayer);
     }
 
+    @Id
     private String gameId;
+
     private CallType trump;
     private Integer level;
     private List<Player> players;
