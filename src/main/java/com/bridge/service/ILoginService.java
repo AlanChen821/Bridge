@@ -5,5 +5,5 @@ import com.bridge.entity.user.Player;
 
 public interface ILoginService {
 
-    Game loginAsGuest(Player player);
+    Player loginAsGuest(String account);
 }
