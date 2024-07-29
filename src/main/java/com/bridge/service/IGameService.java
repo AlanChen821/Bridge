@@ -1,0 +1,9 @@
+package com.bridge.service;
+
+import com.bridge.entity.Game;
+
+import java.util.List;
+
+public interface IGameService {
+    List<Game> getGameList();
+}
