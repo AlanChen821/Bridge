@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IGameService {
     List<Game> getGameList();
+
+    Game enterGame(String token);
 }
