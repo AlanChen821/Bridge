@@ -28,10 +28,18 @@ public class GameServiceImpl implements IGameService {
     }
 
     @Override
-    public Game enterGame(String token) {
-        Game targetGame;
+    public Game enterGame(String token, Game targetGame) throws Exception {
+        Optional<Game> game = gameRepository.findById(Long.valueOf(targetGame.getId()));
 
-//        targetGame = gameRepository.getById(1L);
+        //  check whether the game exists or not.
+        if (game.isEmpty()) {
+            String message = String.format("Specified game %s doesn't exist.", targetGame.getId());
+            log.warn(message);
+            throw new Exception(message);
+        }
+
+        Game enteredGame = game.get();
+        gameRepository.save(enteredGame);
 
 //        int result = gameParameterJdbcTemplate.queryForObject("SELECT * from game", Game.class);
 
@@ -41,27 +49,29 @@ public class GameServiceImpl implements IGameService {
 //        String encodedAccount = Base64.getEncoder().encodeToString(account.getBytes());
         Player player = new Player();
 
-        log.info("Player {} has logged in.", player.getAccount());
-        //  check whether there's a waiting room, if there isn't, create a new one.
-        String gameKey = RedisConstants.GAME_KEY;
-        if (RedisUtils.checkKey(gameKey)) {
-            Map<String, Game> gameMap = RedisUtils.getFromRedis(gameKey, Game.class);
-            Optional<Map.Entry<String, Game>> firstWaitingGame = gameMap.entrySet().stream().filter(entry -> GameStatus.WAITING.equals(entry.getValue().getStatus())).findFirst();
-            if (firstWaitingGame.isPresent()) {
-                targetGame = firstWaitingGame.get().getValue();
-                targetGame.addNewPlayer(player);
-                RedisUtils.insertRedis(gameKey, targetGame.getId(), targetGame);
-            } else {
-                targetGame = this.createNewGame(player);
-                this.gameRepository.saveAndFlush(targetGame);
-            }
-        } else {
-            //  otherwise, attend to the existing room.
-            targetGame = this.createNewGame(player);
-            this.gameRepository.saveAndFlush(targetGame);
-        }
+        log.info("Player {} try to enter game {}.", player.getAccount(), enteredGame.getId());
+        enteredGame.addNewPlayer(player);
 
-        return targetGame;
+        //  redis part
+//        String gameKey = RedisConstants.GAME_KEY;
+//        if (RedisUtils.checkKey(gameKey)) {
+//            Map<String, Game> gameMap = RedisUtils.getFromRedis(gameKey, Game.class);
+//            Optional<Map.Entry<String, Game>> firstWaitingGame = gameMap.entrySet().stream().filter(entry -> GameStatus.WAITING.equals(entry.getValue().getStatus())).findFirst();
+//            if (firstWaitingGame.isPresent()) {
+//                enteredGame = firstWaitingGame.get().getValue();
+//                enteredGame.addNewPlayer(player);
+//                RedisUtils.insertRedis(gameKey, enteredGame.getId(), enteredGame);
+//            } else {
+//                enteredGame = this.createNewGame(player);
+//                this.gameRepository.saveAndFlush(enteredGame);
+//            }
+//        } else {
+//            //  otherwise, attend to the existing room.
+//            enteredGame = this.createNewGame(player);
+//            this.gameRepository.saveAndFlush(enteredGame);
+//        }
+
+        return enteredGame;
     }
 
     private Game createNewGame(Player firstPlayer) {

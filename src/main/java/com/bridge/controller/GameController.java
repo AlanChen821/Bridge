@@ -27,12 +27,17 @@ public class GameController {
     }
 
     @PutMapping
-    public ResponseEntity<Game> enterGame(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<Game> enterGame(@RequestHeader HttpHeaders headers, @RequestBody Game targetGame) {
         List<String> tokens = headers.get("token");
         if (null == tokens || tokens.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-        Game targetGame = gameService.enterGame(tokens.get(0));
-        return new ResponseEntity<>(targetGame, HttpStatus.OK);
+        Game enteredGame = null;
+        try {
+            enteredGame = gameService.enterGame(tokens.get(0), targetGame);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return new ResponseEntity<>(enteredGame, HttpStatus.OK);
     }
 }

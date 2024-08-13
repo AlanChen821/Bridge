@@ -7,5 +7,5 @@ import java.util.List;
 public interface IGameService {
     List<Game> getGameList();
 
-    Game enterGame(String token);
+    Game enterGame(String token, Game targetGame) throws Exception;
 }
