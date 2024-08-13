@@ -25,25 +25,29 @@ public class ShuffleServiceImpl implements IShuffleService {
 
         List<Card> player0Cards = parseCards(numbers, 0);
         Player player0 = new Player();
-        player0.setId("Player0");
+        player0.setId(0);
+
         player0.setCards(player0Cards);
         player0.setPoints(countPoints(player0Cards));
 
         List<Card> player1Cards = parseCards(numbers, 1);
         Player player1 = new Player();
-        player1.setId("Player1");
+        player0.setId(1);
+
         player1.setCards(player1Cards);
         player1.setPoints(countPoints(player1Cards));
 
         List<Card> player2Cards = parseCards(numbers, 2);
         Player player2 = new Player();
-        player2.setId("Player2");
+        player0.setId(2);
+
         player2.setCards(player2Cards);
         player2.setPoints(countPoints(player2Cards));
 
         List<Card> player3Cards = parseCards(numbers, 3);
         Player player3 = new Player();
-        player3.setId("Player3");
+        player0.setId(3);
+
         player3.setCards(player3Cards);
         player3.setPoints(countPoints(player3Cards));
 

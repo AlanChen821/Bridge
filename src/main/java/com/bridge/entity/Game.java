@@ -22,20 +22,6 @@ import java.util.List;
 //@NoArgsConstructor
 public class Game {
 
-    public Game() {
-        this.id = "1";
-        this.players = new ArrayList<>();
-        this.createTime = LocalDateTimeUtils.getStringOfNow();
-        this.status = GameStatus.WAITING;
-
-    }
-
-    public Game(Player firstPlayer) {
-        this();
-
-        this.players.add(firstPlayer);
-    }
-
     @Id
     private String id;
 
@@ -56,6 +42,19 @@ public class Game {
 
     @Transient
     private String updateTime;
+
+    public Game() {
+        this.players = new ArrayList<>();
+        this.createTime = LocalDateTimeUtils.getStringOfNow();
+        this.status = GameStatus.WAITING;
+
+    }
+
+    public Game(Player firstPlayer) {
+        this();
+
+        this.players.add(firstPlayer);
+    }
 
     public void addNewPlayer(Player newPlayer) {
         this.players.add(newPlayer);
