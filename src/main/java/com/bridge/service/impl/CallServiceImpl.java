@@ -1,7 +1,9 @@
 
 package com.bridge.service.impl;
 
-import com.bridge.RedisConstants;
+import com.bridge.constant.RedisConstants;
+import com.bridge.entity.websocket.WebsocketNotifyCall;
+import com.bridge.enumeration.WebsocketNotifyType;
 import com.bridge.service.ICallService;
 import com.bridge.utils.JsonUtils;
 import com.bridge.utils.LocalDateTimeUtils;
@@ -12,13 +14,23 @@ import com.bridge.entity.card.CallType;
 import com.bridge.enumeration.GameStatus;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
+
+import static com.bridge.constant.WebsocketDestination.TOPIC_CALL;
 
 @Service
 @Slf4j
 public class CallServiceImpl implements ICallService {
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    public CallServiceImpl(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
+    }
 
     @Override
     public Game call(Call currentCall) throws Exception {
@@ -72,6 +84,23 @@ public class CallServiceImpl implements ICallService {
         game.setCallHistory(callHistory);
         game.setUpdateTime(LocalDateTimeUtils.getStringOfNow());
         RedisUtils.insertRedis(gameKey, gameId, game);
+
+        WebsocketNotifyCall websocketNotifyCall = WebsocketNotifyCall.builder()
+                .call(currentCall)
+                .createTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        simpMessagingTemplate.convertAndSend(TOPIC_CALL, JsonUtils.serialize(websocketNotifyCall));
+
+        if (game.getStatus().equals(GameStatus.PLAYING)) {
+            log.info("Game {} has started, trump : {}, level : {}.", game.getRoomName(), game.getTrump(), game.getLevel());
+            websocketNotifyCall = WebsocketNotifyCall.builder()
+                    .type(WebsocketNotifyType.CALL)
+                    .call(currentCall)
+                    .message(String.format("Game %s has started, trump : %s, level : %d.", game.getRoomName(), game.getTrump(), game.getLevel()))
+                    .createTime(new Timestamp(System.currentTimeMillis()))
+                    .build();
+            simpMessagingTemplate.convertAndSend(TOPIC_CALL, JsonUtils.serialize(websocketNotifyCall));
+        }
         return game;
     }
 }

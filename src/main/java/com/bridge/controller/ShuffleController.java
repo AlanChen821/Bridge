@@ -21,7 +21,7 @@ public class ShuffleController {
 
     @GetMapping("/shuffle")
     public List<Player> shuffle(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return shuffleService.shuffle("", "", "", "");
+        return shuffleService.shuffle(0L, 0L, 0L, 0L);
 //        return new Greeting(0, name);
     }
 }

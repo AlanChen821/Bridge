@@ -17,7 +17,7 @@ public class LoginController {
     }
 
     @PostMapping("/loginAsGuest")
-    public Player loginAsGuest(@RequestBody String account) {
-        return loginService.loginAsGuest(account);
+    public Player loginAsGuest(@RequestBody Player player) {
+        return loginService.loginAsGuest(player.getAccount());
     }
 }

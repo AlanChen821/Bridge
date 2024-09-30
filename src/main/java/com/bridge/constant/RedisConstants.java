@@ -1,4 +1,4 @@
-package com.bridge;
+package com.bridge.constant;
 
 public class RedisConstants {
 

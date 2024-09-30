@@ -6,14 +6,40 @@ stompClient.onConnect = (frame) => {
     setConnected(true);
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/greetings', (greeting) => {
-        showGreeting(JSON.parse(greeting.body).content);
+        console.log('Receive message from /topic/greetings : ' + greeting.body);
+//        showGreeting(greeting.body);
+//        showGreeting(JSON.parse(greeting.body).content);
+        showGreeting(greeting.body);
     });
     stompClient.subscribe('/topic/login', (login) => {
-        showLogin(JSON.parse(login.body).content);
+        console.log('Receive message from /topic/login : ' + login.body);
+//        showLogin(JSON.parse(login.body).content);
+        showLogin(login.body);
     });
-    //
+    stompClient.subscribe('/topic/entry', (entry) => {
+        console.log('Receive message from /topic/entry : ' + entry.body);
+        showLogin(entry.body);
+        showGreeting(entry.body);
+    });
+    stompClient.subscribe('/topic/begin', (begin) => {
+        console.log('Receive message from /topic/begin : ' + begin.body);
+        showLogin(begin.body);
+        showGreeting(begin.body);
+    });
+    stompClient.subscribe('/topic/shuffle', (shuffle) => {
+        console.log('Receive message from /topic/shuffle : ' + shuffle.body);
+        showGreeting(shuffle.body);
+    });
+    stompClient.subscribe('/topic/call', (call) => {
+        console.log('Receive message from /topic/call : ' + call.body);
+        showGreeting(call.body);
+    });
+    stompClient.subscribe('/topic/play', (play) => {
+        console.log('Receive message from /topic/play : ' + play.body);
+        showGreeting(play.body);
+    });
     stompClient.subscribe('/topic/1/cards', (cards) => {
-        console.log('Receive message');
+        console.log('Receive message from /topic/1/cards : ' + cards);
         showGreeting("Let's play!");
 //        showGreeting(JSON.parse(cards.body).content);
     });

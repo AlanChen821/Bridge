@@ -9,17 +9,20 @@ import org.springframework.util.DigestUtils;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class Player implements Serializable {
-    private Integer id;
+    private Long id;
 
     private String account;
 
     private String accountMd5;
+
+    private String accountBase64;
 
     private List<Card> cards;
 
@@ -34,8 +37,9 @@ public class Player implements Serializable {
             throw new RuntimeException(e);
         }
 //            MessageDigest md = MessageDigest.getInstance("MD5");
-        String accountMd5 = DigestUtils.md5DigestAsHex(bytesOfMessage);
+        this.accountMd5 = DigestUtils.md5DigestAsHex(bytesOfMessage);
 
-        this.accountMd5 = accountMd5;
+        final Base64.Encoder encoder = Base64.getEncoder();
+
     }
 }

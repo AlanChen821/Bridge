@@ -1,4 +1,4 @@
-package com.bridge.demo;
+package com.bridge.controller;
 
 import com.bridge.entity.websocket.GreetingWS;
 import com.bridge.entity.websocket.HelloMessage;
@@ -33,20 +33,20 @@ public class GreetingWSController {
     @MessageMapping("/login")
     @SendTo("/topic/login")
     public GreetingWS login(HelloMessage message) throws Exception {
-        Thread.sleep(100);
+//        Thread.sleep(100);
         Integer order = map.getOrDefault(message.getId(), null);
         if (null == order) {
             order = map.size();
             map.put(message.getId(), order);
         }
-        messageTemplate.convertAndSend("/topic/greetings", "{\"message\":\"start\"}");
-        if (order != 3) {
+        messageTemplate.convertAndSend("/topic/greetings", "{\"message\":\"start!\"}");
+//        if (order != 3) {
             System.out.println(order + "th player " + message.getId() + " has logged in.");
             return new GreetingWS("Welcome! You are the " + HtmlUtils.htmlEscape(order.toString()) + "th user.");
-        } else {
-            start();
-            return null;
-        }
+//        } else {
+//            start();
+//            return null;
+//        }
     }
 
     @SendTo("/topic/greetings")

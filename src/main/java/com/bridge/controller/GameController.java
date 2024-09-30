@@ -2,13 +2,18 @@ package com.bridge.controller;
 
 import com.bridge.entity.Game;
 import com.bridge.service.IGameService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("game")
 public class GameController {
@@ -30,11 +35,19 @@ public class GameController {
     public ResponseEntity<Game> enterGame(@RequestHeader HttpHeaders headers, @RequestBody Game targetGame) {
         List<String> tokens = headers.get("token");
         if (null == tokens || tokens.isEmpty()) {
+            log.error("Receive request whose token is null/empty.");
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-        Game enteredGame = null;
+        List<String> gameIds = headers.get("gameId");
+        if (Objects.isNull(gameIds) || gameIds.isEmpty()) {
+            log.error("Receive request whose gameId is null/empty.");
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+
+        List<Long> gameId = gameIds.stream().map(Long::parseLong).collect(Collectors.toList());
+        Game enteredGame;
         try {
-            enteredGame = gameService.enterGame(tokens.get(0), targetGame);
+            enteredGame = gameService.enterGame(tokens.get(0), gameId.get(0), targetGame);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
