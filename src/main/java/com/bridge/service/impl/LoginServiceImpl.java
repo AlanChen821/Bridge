@@ -19,11 +19,11 @@ public class LoginServiceImpl implements ILoginService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @Autowired
-    private NamedParameterJdbcTemplate gameParameterJdbcTemplate;
+//    @Autowired
+//    private NamedParameterJdbcTemplate gameParameterJdbcTemplate;
 
-    @Autowired
-    private GameRepository gameRepository;
+//    @Autowired
+//    private GameRepository gameRepository;
 
     public LoginServiceImpl(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;

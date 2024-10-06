@@ -30,8 +30,8 @@ import static com.bridge.constant.WebsocketDestination.TOPIC_ENTRY;
 @Slf4j
 public class GameServiceImpl implements IGameService {
 
-    @Autowired
-    private GameRepository gameRepository;
+//    @Autowired
+//    private GameRepository gameRepository;
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
