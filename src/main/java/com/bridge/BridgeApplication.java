@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @Slf4j
-@MapperScan("com.bridge.mapper")
+//@MapperScan("com.bridge.mapper")
 public class BridgeApplication {
 
     public static void main(String[] args) {

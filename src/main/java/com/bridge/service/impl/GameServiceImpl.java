@@ -7,7 +7,7 @@ import com.bridge.entity.websocket.WebsocketNotifyBegin;
 import com.bridge.entity.websocket.WebsocketNotifyEntry;
 import com.bridge.enumeration.GameStatus;
 import com.bridge.enumeration.WebsocketNotifyType;
-import com.bridge.repository.GameRepository;
+//import com.bridge.repository.GameRepository;
 import com.bridge.service.IGameService;
 import com.bridge.service.IShuffleService;
 import com.bridge.utils.JsonUtils;
@@ -30,8 +30,8 @@ import static com.bridge.constant.WebsocketDestination.TOPIC_ENTRY;
 @Slf4j
 public class GameServiceImpl implements IGameService {
 
-    @Autowired
-    private GameRepository gameRepository;
+//    @Autowired
+//    private GameRepository gameRepository;
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
