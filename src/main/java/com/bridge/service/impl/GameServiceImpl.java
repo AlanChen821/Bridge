@@ -13,6 +13,7 @@ import com.bridge.entity.websocket.WebsocketNotifyEntry;
 import com.bridge.entity.websocket.WebsocketNotifyPlay;
 import com.bridge.enumeration.GameStatus;
 import com.bridge.enumeration.WebsocketNotifyType;
+import com.bridge.mapper.GameMapper;
 import com.bridge.repository.GameRepository;
 import com.bridge.service.IGameService;
 import com.bridge.service.IShuffleService;
@@ -45,9 +46,12 @@ public class GameServiceImpl implements IGameService {
 
     private final IShuffleService shuffleService;
 
-    public GameServiceImpl(SimpMessagingTemplate simpMessagingTemplate, IShuffleService shuffleService) {
+    private final GameMapper gameMapper;
+
+    public GameServiceImpl(SimpMessagingTemplate simpMessagingTemplate, IShuffleService shuffleService, GameMapper gameMapper) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.shuffleService = shuffleService;
+        this.gameMapper = gameMapper;
     }
 
     @Override
@@ -61,6 +65,9 @@ public class GameServiceImpl implements IGameService {
             results = new ArrayList<Game>(gameMap.values());
             
         }
+
+        List<Game> gameList = gameMapper.getList();
+
 //        gameRepository.findAll();
         return results; 
     }
