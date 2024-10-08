@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Protocol;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -13,9 +15,19 @@ import java.util.Map;
 @Component
 @Slf4j
 public class RedisUtils {
-    private static final JedisPool pool = new JedisPool("localhost", 6379);
+//    private static final JedisPool pool = new JedisPool("localhost", 6379);
+//    private static final JedisPool pool = new JedisPool("oregon-redis.render.com", 6379, true, "V1kb7SD09hrmlUNExd8kVA80Bwn3WobX");
+//    private static final JedisPool pool = new JedisPool("oregon-redis.render.com", 6379, true);
+//    private static final JedisPool pool = new JedisPool("oregon-redis.render.com", 6379, "", "V1kb7SD09hrmlUNExd8kVA80Bwn3WobX");
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+
+//    rediss://red-cs14e723esus739ah3ag:V1kb7SD09hrmlUNExd8kVA80Bwn3WobX@oregon-redis.render.com:6379
+//    private static final JedisPool pool = new JedisPool(jedisPoolConfig, "oregon-redis.render.com", 6379, Protocol.DEFAULT_TIMEOUT, "V1kb7SD09hrmlUNExd8kVA80Bwn3WobX", true, null, null, null);
+    private static final JedisPool pool = new JedisPool(jedisPoolConfig, "oregon-redis.render.com", 6379, Protocol.DEFAULT_TIMEOUT, "red-cs14e723esus739ah3ag", "V1kb7SD09hrmlUNExd8kVA80Bwn3WobX", true);
+
 
 //    public RedisUtils() {
 //        log.debug("Construct RedisUtils.");
