@@ -64,7 +64,15 @@ public class BridgeApplication {
 
 		//	weekly 418
 //		Q1
-		maxGoodNumbers();
+//		maxGoodNumbers();
+
+        //  Biweekly 141
+//        Q1
+//        minBitwiseArray();
+
+        //  Weekly 419
+        //  Q1
+        findXSum();
 	}
 
 
@@ -983,5 +991,131 @@ public class BridgeApplication {
             result += (reverse.charAt(i) - '0') * base;
         }
         return (int) result;
+    }
+
+    private static int[] minBitwiseArray() {
+        List<Integer> nums = Arrays.asList(2,3,5,7);
+        nums = Arrays.asList(11,13,31);
+        nums = Arrays.asList(17, 17);
+
+        int[] result = new int[nums.size()];
+//        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < nums.size(); i++) {
+            Integer num = nums.get(i);
+//        for (Integer num : nums) {
+            List<Integer> binaries = getBinary(num);
+
+            Integer res = getMinBitwise(num, binaries);
+//            result.add(res);
+//            result[nums.indexOf(num)] = res;
+            result[i] = res;
+        }
+
+//        return result.toArray();
+        for (int i = 0; i < result.length; i++) {
+            System.out.println(result[i]);
+        }
+
+        return result;
+    }
+
+    private static List<Integer> getBinary(Integer num) {
+//    private String getBinary(Integer num) {
+//        StringBuilder sb = new StringBuilder();
+        List<Integer> binaryList = new ArrayList<>();
+
+        while (num > 0) {
+            int remain = num % 2;
+            binaryList.add(remain);
+            num /= 2;
+        }
+
+//        Collections.reverse(binaryList);
+        return binaryList;
+    }
+
+    private static Integer getMinBitwise(int current, List<Integer> binary) {
+        Integer minBitWise = Integer.MAX_VALUE;
+
+        for (int j = 0; j < binary.size(); j++) {
+            Integer bit = binary.get(j);
+//        for (Integer bit : binary) {
+            if (bit.equals(1)) {
+                List<Integer> target = new ArrayList<>();
+                target.addAll(binary);
+//                Collections.copy(binary, target);
+
+//                int index = binary.indexOf(bit);
+                int index = j;
+                target.set(index, 0);
+
+                //  target + 1
+                List<Integer> targetPlus1 = new ArrayList<>();
+//                Collections.copy(target, targetPlus1);
+                targetPlus1.addAll(target);
+                for (int i = 0; i < targetPlus1.size(); i++) {
+                    Integer digit = targetPlus1.get(i);
+                    if (digit.equals(0)) {
+                        targetPlus1.set(i, 1);
+                        break;
+                    } else {    //  carry
+                        targetPlus1.set(i, 0);
+//                        break;
+                    }
+                }
+
+                //  target OR target+1
+                List<Integer> orResult = new ArrayList<>();
+                for (int i = 0; i < target.size(); i++) {
+                    if (target.get(i).equals(1) || targetPlus1.get(i).equals(1)) {
+                        orResult.add(1);
+//                        orResult.set(i, 1);
+                    } else {
+                        orResult.add(0);
+//                        orResult.set(i, 0);
+                    }
+                }
+
+                //  transform
+                int currentNum = getNumFromBinary(orResult);
+
+                if (currentNum == current) {
+                    int targetNum = getNumFromBinary(target);
+                    minBitWise = minBitWise > targetNum ? targetNum : minBitWise;
+                }
+            }
+        }
+
+        return minBitWise == Integer.MAX_VALUE ? -1 : minBitWise;
+    }
+
+    private static Integer getNumFromBinary(List<Integer> num) {
+        double result = 0;
+
+        for (int i = 0; i < num.size(); i++) {
+            if (num.get(i).equals(1)) {
+                double base = Math.pow(2, i);
+                result += base;
+            }
+        }
+
+        return (int) result;
+    }
+
+    private static int[] findXSum() {
+        int[] nums = {1,1,2,2,3,4,2,3};
+        int k = 6;
+        int x = 2;
+
+        int length = nums.length;
+        for (int i = 0; i < length - k + 1; i++) {
+            HashMap<Integer, Integer> count = new HashMap<>();
+            for (int j = 0; j < k; j++) {
+
+
+            }
+        }
+
+        return null;
     }
 }
