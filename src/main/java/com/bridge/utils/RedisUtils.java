@@ -26,8 +26,10 @@ public class RedisUtils {
 
 //    rediss://red-cs14e723esus739ah3ag:V1kb7SD09hrmlUNExd8kVA80Bwn3WobX@oregon-redis.render.com:6379
 //    private static final JedisPool pool = new JedisPool(jedisPoolConfig, "oregon-redis.render.com", 6379, Protocol.DEFAULT_TIMEOUT, "V1kb7SD09hrmlUNExd8kVA80Bwn3WobX", true, null, null, null);
-    private static final JedisPool pool = new JedisPool(jedisPoolConfig, "oregon-redis.render.com", 6379, Protocol.DEFAULT_TIMEOUT, "red-cs14e723esus739ah3ag", "V1kb7SD09hrmlUNExd8kVA80Bwn3WobX", true);
-
+    //  for local
+//    private static final JedisPool pool = new JedisPool(jedisPoolConfig, "oregon-redis.render.com", 6379, Protocol.DEFAULT_TIMEOUT, "red-cs14e723esus739ah3ag", "V1kb7SD09hrmlUNExd8kVA80Bwn3WobX", true);
+    //  on Render
+    private static final JedisPool pool = new JedisPool(jedisPoolConfig, "red-cs14e723esus739ah3ag", 6379);
 
 //    public RedisUtils() {
 //        log.debug("Construct RedisUtils.");
