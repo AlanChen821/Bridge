@@ -3,6 +3,7 @@ package com.bridge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -72,7 +73,16 @@ public class BridgeApplication {
 
         //  Weekly 419
         //  Q1
-        findXSum();
+//        findXSum();
+
+//        Biweekly 142
+        //  Q1
+//        possibleStringCount();
+        //  Q3
+//        maxScore();
+
+        //  Weekly 421
+        lengthAfterTransformations();
 	}
 
 
@@ -1117,5 +1127,154 @@ public class BridgeApplication {
         }
 
         return null;
+    }
+
+    public static int possibleStringCount() {
+        String word = "abbcccc";
+//        word = "abcd";
+//        word = "aaaa";
+//        word = "ere";
+
+        int result = possibleCounts(word);
+//        Map<Character, Integer> appear = new HashMap<>();
+//        int result = 1;
+//        for (int i = 0; i < word.length(); i++) {
+//            Character c = word.charAt(i);
+//
+//            if (appear.containsKey(c)) {
+//                int times = appear.get(c);
+//                appear.put(c, times + 1);
+//                result++;
+//            } else {
+//                appear.put(c, 1);
+//            }
+//        }
+
+        System.out.println(result);
+        return result;
+    }
+
+    private static int possibleCounts(String word) {
+        if (word.length() == 1) {
+            return 1;
+        }
+        Character lastCharacter = word.charAt(word.length() - 1);
+        Character lastButOneCharacter = word.charAt(word.length() - 2);
+        if (lastCharacter.equals(lastButOneCharacter)) {
+            return 1 + possibleCounts(word.substring(0, word.length() - 1));
+        } else {
+            return possibleCounts(word.substring(0, word.length() - 1));
+        }
+    }
+
+    public static int maxScore() {
+        int n = 2;
+        int k = 1;
+        int[][] stayScore = {{2, 3}};
+        int[][] travelScore = {{0, 2}, {1, 0}};
+
+        int result = 0;
+        for (int i = 0; i < n; i++) {
+            result = Math.max(result, sumScore(n, k, 0, i, 0, stayScore, travelScore));
+        }
+
+//        //  stay strategy
+//        for (int c = 0; c < n; c++) {
+//            int sum = 0;
+//            for (int d = 0; d < k; d++) {
+//                sum += stayScore[d][c];
+//            }
+//
+//            result = Math.max(sum, result);
+//        }
+//
+//        //  travel strategy
+////        for (int c = )
+
+        System.out.println(result);
+        return result;
+    }
+
+    private static int sumScore(int n, int k, int previousCity, int currentCity, int currentDay, int[][] stayScore, int[][] travelScore) {
+        if (k == currentDay + 1) {  //  the last day
+            if (previousCity == currentCity) { //    stay
+                return stayScore[currentDay][previousCity];
+            } else {
+                return travelScore[previousCity][currentCity];
+            }
+        } else {
+            int result = 0;
+            for (int i = 0; i < n; i++) {   //  choose the next city
+                result = Math.max(result, sumScore(n, k, currentCity, i, currentDay + 1, stayScore, travelScore));
+            }
+            return result;
+        }
+    }
+
+    public static int lengthAfterTransformations() {
+        String s = "abcyy";
+        int t = 2;
+
+//        s = "azbk";
+//        t = 1;
+
+//        s = "jqktcurgdvlibczdsvnsg";
+//        t = 7517;
+
+//        s = "cu";
+//        t = 5;
+
+        String result = "";
+        for (int i = 0; i < s.length(); i++) {
+             result += getStringAfterTransform(s.charAt(i), t);
+        }
+        System.out.println("result : " + result + ", length : " + result.length());
+        return result.length();
+
+//        int i = 0;
+//        String result = null;
+//        while (i++ < t) {
+//            int nextStep = 0;
+//            for (int j = 0; j < s.length(); j = j + nextStep) {
+//                Character originalC = s.charAt(j);
+//
+//                String newStr;
+//                if (originalC.equals('z')) {
+//                    newStr = "ab";
+////                    j += 2;
+//                    nextStep = 2;
+//                } else {
+//                    Character newC = ++originalC;
+//                    newStr = String.valueOf(newC);
+////                    j++;
+//                    nextStep = 1;
+//                }
+//
+//                //  postStr
+//                int endIndex = Math.max(s.length(), j + 1);
+//                String postStr = s.substring(j + 1, endIndex);
+//
+//                s = s.substring(0, j) + newStr + postStr;
+////                System.out.println("result : " + s + ", length : " + s.length());
+//            }
+//        }
+
+//        System.out.println("result : " + s + ", length : " + s.length());
+//        return s.length();
+    }
+
+    private static String getStringAfterTransform(Character ch, int t) {
+        int newCh = ch + t;
+        String newStr;
+        if (newCh > 'z') {
+            int dif = newCh - 'z' - 1;
+            return getStringAfterTransform('z', dif);
+//            newStr = "ab";
+//        } else if (newCh == 'z') {
+//            return "z";
+        } else {
+            char newC = (char) newCh;
+            return String.valueOf(newC);
+        }
     }
 }
