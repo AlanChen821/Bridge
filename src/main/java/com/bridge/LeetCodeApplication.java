@@ -1,15 +1,11 @@
 package com.bridge;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.StringUtils;
-
-import java.util.*;
 
 @SpringBootApplication
 @Slf4j
-public class BridgeApplication {
+public class LeetCodeApplication {
 
     public static void main(String[] args) {
         //	Weekly 422
