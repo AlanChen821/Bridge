@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/gs-guide-websocket")
                 .setAllowedOrigins("https://bridge-4204.onrender.com")  //  Allow your Render URL
-                .withSockJS()   // This adds SockJS fallback for better compatibility
+//                .withSockJS()   // This adds SockJS fallback for better compatibility
         ;
     }
 }

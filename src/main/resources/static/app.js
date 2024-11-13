@@ -3,9 +3,9 @@ const stompClient = new StompJs.Client({
     brokerURL: 'wss://bridge-4204.onrender.com/gs-guide-websocket',
     reconnectDelay: 5000,   // Optionally add a reconnect delay
     // If using SockJS, set brokerURL to null and specify only the endpoint
-    webSocketFactory:function() {
-        return new SockJS('https://bridge-4204.onrender.com/gs-guide-websocket');
-    }
+//    webSocketFactory:function() {
+//        return new SockJS('https://bridge-4204.onrender.com/gs-guide-websocket');
+//    }
 });
 
 stompClient.onConnect = (frame) => {
