@@ -3,6 +3,10 @@ package com.bridge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 @SpringBootApplication
 @Slf4j
 public class LeetCodeApplication {
@@ -10,76 +14,90 @@ public class LeetCodeApplication {
     public static void main(String[] args) {
         //	Weekly 422
 //        isBalanced();
-        minTimeToReach();
+//        minTimeToReach();
+
+        //  BiWeekly 143
+//        smallestNumber();
+        maxFrequency();
 	}
 
-    public static boolean isBalanced() {
-        String num = "1234";
-        num = "24123";
+    public static int smallestNumber() {
+        int n = 10;
+        int t = 2;
+        n = 15;
+        t = 3;
+        n = 21;
+        t = 4;
 
-        int result = 0;
-        for (int i = 0; i < num.length(); i++) {
-            int digit = num.charAt(i) - '0';
-            if (i % 2 == 0) {
-                result += digit;
-            } else {
-                result -= digit;
+        int result;
+        while (true) {
+            result = find(n, t);
+            if (result > 0) {
+                break;
             }
+            n++;
         }
 
-        System.out.println("result : " + result + " , isBalanced : " + (result == 0));
-        return result == 0;
-    }
-
-    public static int minTimeToReach() {
-        int[][] moveTime = { { 0, 4 }, { 4, 4} };
-//        int[][] moveTime = { { 0, 0, 0 }, { 0, 0, 0} };
-//        int[][] moveTime = { { 0, 1 }, { 1, 2} };
-//        int[][] moveTime = { { 27, 85 }, { 22, 53 } };
-
-		int result = minTimeByDFS(moveTime, 0, 0, 0);
-        System.out.println(result);
+        System.out.println("result : " + result);
         return result;
     }
 
-    private static int minTimeByDFS(int[][] moveTime, int currentI, int currentJ, int currentT) {
-        int next = 0;
-        if (currentJ < moveTime[0].length - 1) {
-            //	move right
-            int cost = moveTime[currentI][currentJ + 1];
-            next = (currentT >= cost) ? currentT + 1 : cost + 1;
-            return minTimeByDFS(moveTime, currentI, currentJ + 1, next);
+    private static int find(int n, int t) {
+        int n2 = n;
+        int sum = 1;
+        while (n2 != 0) {
+            int digit = n2 % 10;
+            sum *= digit;
+            if (digit % t == 0 || sum % t == 0) {
+//                System.out.println("result : " + n);
+                return n;
+            }
+            n2 /= 10;
         }
-        if (currentI < moveTime.length - 1) {
-            //	move bottom
-            int cost = moveTime[currentI + 1][currentJ];
-            next = (currentT >= cost) ? currentT + 1 : cost + 1;
-            return minTimeByDFS(moveTime, currentI + 1, currentJ, next);
-        }
-        return currentT;
+        return -1;
+    }
 
-//        if (currentJ == moveTime[0].length - 1 && currentI == moveTime.length - 1) {
-//            return currentT;
-//        }
-//
-//        int moveRightTime = 0;
-//        if (currentJ < moveTime[0].length - 1) {
-//            //	move right
-//            int cost = moveTime[currentI][currentJ + 1];
-//            moveRightTime = (currentT >= cost) ? currentT + 1 : cost + 1;
-//        }
-//
-//        int moveBottomTime = 0;
-//        if (currentI < moveTime.length - 1) {
-//            //	move bottom
-//            int cost = moveTime[currentI + 1][currentJ];
-//            moveBottomTime = (currentT >= cost) ? currentT + 1 : cost + 1;
-//        }
-//
-//        if (moveRightTime < moveBottomTime) {
-//            return minTimeByDFS(moveTime, currentI, currentJ + 1, moveRightTime);
-//        } else {
-//            return minTimeByDFS(moveTime, currentI + 1, currentJ, moveBottomTime);
-//        }
+    public static int maxFrequency() {
+        int[] nums = new int[]{ 1, 4, 5 };
+        int k = 1;
+        int numOperations = 2;
+
+//        int[] nums = new int[] { 5,11,20,20};
+//        k = 5;
+//        numOperations = 1;
+
+        HashMap<Integer, Integer> occurrences = new HashMap<>();
+        int mostFrequentNum = nums[0];
+        int maxAppearCount = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int key = nums[i];
+            int value = 0;
+            if (occurrences.containsKey(key)) {
+                value = occurrences.get(key);
+            }
+            occurrences.put(key, ++value);
+            if (maxAppearCount < value) {
+                maxAppearCount = value;
+                mostFrequentNum = key;
+            }
+//            maxAppearCount = Math.max(maxAppearCount, value);
+        }
+
+        for (Map.Entry<Integer, Integer> entry : occurrences.entrySet()) {
+            int key = entry.getKey();
+            int value = entry.getValue();
+            if (key != mostFrequentNum && Math.abs(key - mostFrequentNum) <= k) {
+                int increment = Math.min(numOperations, value);
+                maxAppearCount += increment;
+
+                numOperations -= value;
+                if (numOperations <= 0) {
+                    break;
+                }
+            }
+        }
+
+        System.out.println("result : " + maxAppearCount);
+        return maxAppearCount;
     }
 }
