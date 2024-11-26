@@ -26,4 +26,8 @@ public enum PokerSuit {
                 return CLUB;
         }
     }
+
+    public int getOrder() {
+        return this.order;
+    }
 }

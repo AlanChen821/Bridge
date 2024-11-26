@@ -1,9 +1,10 @@
 package com.bridge.service.impl;
 
 import com.bridge.constant.RedisConstants;
+import com.bridge.entity.card.CallType;
 import com.bridge.entity.websocket.WebsocketNotifyPlay;
 import com.bridge.enumeration.WebsocketNotifyType;
-import com.bridge.service.PlayService;
+import com.bridge.service.IPlayService;
 import com.bridge.utils.JsonUtils;
 import com.bridge.utils.RedisUtils;
 import com.bridge.entity.Game;
@@ -21,7 +22,7 @@ import static com.bridge.constant.WebsocketDestination.TOPIC_PLAY;
 
 @Service
 @Slf4j
-public class PlayServiceImpl implements PlayService {
+public class PlayServiceImpl implements IPlayService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -43,10 +44,31 @@ public class PlayServiceImpl implements PlayService {
             } else {
                 rounds = targetGame.getRounds();
                 Round lastRound = rounds.get(rounds.size() - 1);
-                List<Play> nowPlay = lastRound.getPlays();
-                List<Play> newPlay = new ArrayList<>(nowPlay);
+                List<Play> originalPlay = lastRound.getPlays();
+                List<Play> newPlay = new ArrayList<>(originalPlay);
                 newPlay.add(currentPlay);
                 if (newPlay.size() == 4) {
+                    //  all players have played, start to judge
+                    CallType trump = targetGame.getTrump();
+                    int trumpLevel = trump.getLevel();
+                    Play winner = newPlay.get(0);
+                    for (int i = 1; i < 4 ; i++) {
+                        Play next = newPlay.get(i);
+                        if ((winner.getCard().getSuit().getOrder() == trumpLevel
+                        && next.getCard().getSuit().getOrder() == trumpLevel) ||
+                            (winner.getCard().getSuit().getOrder() != trumpLevel
+                                    && next.getCard().getSuit().getOrder() != trumpLevel)) {
+                            //  both are or aren't trump, compare numbers
+                            if (winner.getCard().getNumber() < next.getCard().getNumber()) {
+                                log.info("current winner : {} is lower than next : {}", winner.getCard(), next.getCard());
+                                winner = next;
+                            }
+                        } else if (winner.getCard().getSuit().getOrder() != trumpLevel) {
+                            log.info("current winner : {} is lower than next : {}", winner.getCard(), next.getCard());
+                            winner = next;
+                        }
+                    }
+
 
                 }
                 lastRound.setPlays(newPlay);

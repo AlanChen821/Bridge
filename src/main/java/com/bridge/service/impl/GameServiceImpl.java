@@ -135,4 +135,21 @@ public class GameServiceImpl implements IGameService {
         RedisUtils.insertRedis(gameKey, String.valueOf(newGame.getId()), newGame);
         return newGame;
     }
+
+    @Override
+    public Game getGame(Long gameId) throws Exception {
+        String gameKey = RedisConstants.GAME_KEY;
+        if (RedisUtils.checkKey(gameKey)) {
+            Map<String, Game> gameMap = RedisUtils.getFromRedis(gameKey, Game.class);
+            Optional<Map.Entry<String, Game>> targetGame = gameMap.entrySet().stream().filter(entry -> entry.getValue().getId().equals(gameId)).findFirst();
+            if (targetGame.isPresent()) {
+                log.info("Target game : {} is found.", gameId);
+            } else {
+                log.warn("Target game : {} isn't found.", gameId);
+                throw new Exception("Target game : " + gameId + " isn't found.");
+            }
+        }
+        return null;
+    }
+
 }
