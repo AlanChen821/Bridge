@@ -1,6 +1,7 @@
 package com.bridge.controller;
 
-import com.bridge.service.PlayService;
+import com.bridge.service.IGameService;
+import com.bridge.service.IPlayService;
 import com.bridge.entity.Game;
 import com.bridge.entity.Play;
 import lombok.extern.slf4j.Slf4j;
@@ -13,14 +14,18 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Slf4j
 public class PlayController {
 
-    private PlayService playService;
+    private final IGameService gameService;
 
-    public PlayController(PlayService playService) {
+    private final IPlayService playService;
+
+    public PlayController(IGameService gameService, IPlayService playService) {
+        this.gameService = gameService;
         this.playService = playService;
     }
 
@@ -32,6 +37,12 @@ public class PlayController {
                 log.error("Receive request whose token is null/empty.");
                 return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
             }
+            List<String> gameIds = headers.get("gameId");
+            if (Objects.isNull(gameIds) || gameIds.isEmpty()) {
+                log.error("Receive request whose gameId is null/empty.");
+                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            }
+//            Game currentGame = gameService.get
             Game currentGame = playService.play(tokens.get(0), currentPlay);
             return new ResponseEntity<>(currentGame, HttpStatus.OK);
         } catch (Exception e) {
