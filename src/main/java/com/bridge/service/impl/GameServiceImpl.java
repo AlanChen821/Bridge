@@ -139,17 +139,33 @@ public class GameServiceImpl implements IGameService {
     @Override
     public Game getGame(Long gameId) throws Exception {
         String gameKey = RedisConstants.GAME_KEY;
-        if (RedisUtils.checkKey(gameKey)) {
-            Map<String, Game> gameMap = RedisUtils.getFromRedis(gameKey, Game.class);
-            Optional<Map.Entry<String, Game>> targetGame = gameMap.entrySet().stream().filter(entry -> entry.getValue().getId().equals(gameId)).findFirst();
-            if (targetGame.isPresent()) {
-                log.info("Target game : {} is found.", gameId);
-            } else {
+        if (RedisUtils.checkKeyAndField(gameKey, gameId.toString())) {
+            Game targetGame = RedisUtils.getFromRedis(gameKey, gameId.toString(), Game.class);
+            if (null == targetGame) {
                 log.warn("Target game : {} isn't found.", gameId);
                 throw new Exception("Target game : " + gameId + " isn't found.");
             }
+            log.info("Target game : {} is found.", gameId);
+            return targetGame;
         }
         return null;
+    }
+
+    @Override
+    public Game changeGameStatus(Long gameId, GameStatus gameStatus) throws Exception {
+        Game targetGame = this.getGame(gameId);
+
+        if (null == targetGame) {
+            throw new Exception("Target game : " + gameId + " isn't found.");
+        }
+
+        targetGame.setStatus(gameStatus);
+        String gameKey = RedisConstants.GAME_KEY;
+        if (RedisUtils.checkKeyAndField(gameKey, gameId.toString())) {
+            RedisUtils.insertRedis(gameKey, gameId.toString(), targetGame);
+        }
+
+        return targetGame;
     }
 
 }
