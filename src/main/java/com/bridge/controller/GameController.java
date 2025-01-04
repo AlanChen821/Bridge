@@ -53,4 +53,18 @@ public class GameController {
         }
         return new ResponseEntity<>(enteredGame, HttpStatus.OK);
     }
+
+    @PutMapping("/{gameId}/status")
+    public ResponseEntity<Game> changeStatus(@RequestHeader HttpHeaders headers,
+                                             @PathVariable Long gameId,
+                                             @RequestBody Game gameStatus) {
+        Game targetGame;
+        try {
+            targetGame = gameService.changeGameStatus(gameId, gameStatus.getStatus());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return new ResponseEntity<>(targetGame, HttpStatus.OK);
+    }
 }
