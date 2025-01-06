@@ -18,7 +18,10 @@ public class LeetCodeApplication {
 
         //  BiWeekly 143
 //        smallestNumber();
-        maxFrequency();
+//        maxFrequency();
+
+        //  Biweekly 147
+         hasMatch();
 	}
 
     public static int smallestNumber() {
@@ -99,5 +102,41 @@ public class LeetCodeApplication {
 
         System.out.println("result : " + maxAppearCount);
         return maxAppearCount;
+    }
+
+    public static boolean hasMatch() {
+        String s = "leetcode";
+        String p = "ee*e";
+
+//        s = "car";
+//        p = "c*v";
+
+//        s = "luck";
+//        p = "u*";
+
+//        s = "ckckkk";
+//        p = "ck*kc";
+
+        boolean result = false;
+        //  1st :
+        if (p.indexOf("*") == 0) {
+            p = p.substring(1);
+            result = s.contains(p);
+        } else if (p.indexOf("*") == p.length() - 1) {
+            p = p.substring(0, p.length() - 1);
+            result = s.contains(p);
+        } else {
+            String[] items = p.split("\\*");
+            int index1 = s.indexOf(items[0]);
+            int index2 = s.lastIndexOf(items[1]);
+            if (index1 >= 0 && index2 >= 0 && index1 + items[0].length() - 1 < index2) {
+                result = true;
+//                System.out.println("true");
+//                return true;
+            }
+        }
+
+        System.out.println(result);
+        return result;
     }
 }
