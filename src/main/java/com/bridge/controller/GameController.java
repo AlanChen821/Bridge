@@ -24,6 +24,18 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    @PostMapping
+    public ResponseEntity<Game> createGame(@RequestHeader HttpHeaders headers, @RequestBody Game newGame) {
+        List<String> tokens = headers.get("token");
+        if (null == tokens || tokens.isEmpty()) {
+            log.error("Receive request whose token is null/empty.");
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+
+        Game targetGame = gameService.createGame(tokens.get(0), newGame);
+        return new ResponseEntity<>(targetGame, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<Game>> getGameList() {
 //            @RequestBody Object gameIO) {
@@ -57,10 +69,10 @@ public class GameController {
     @PutMapping("/{gameId}/status")
     public ResponseEntity<Game> changeStatus(@RequestHeader HttpHeaders headers,
                                              @PathVariable Long gameId,
-                                             @RequestBody Game gameStatus) {
-        Game targetGame;
+                                             @RequestBody Game targetGame) {
+//        Game targetGame;
         try {
-            targetGame = gameService.changeGameStatus(gameId, gameStatus.getStatus());
+            targetGame = gameService.changeGameStatus(gameId, targetGame.getStatus());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
