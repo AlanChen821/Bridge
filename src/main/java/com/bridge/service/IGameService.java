@@ -8,6 +8,8 @@ import java.util.List;
 public interface IGameService {
     List<Game> getGameList();
 
+    Game createGame(String token, Game newGame);
+
     Game enterGame(String token, Long gameId, Game targetGame) throws Exception;
 
     Game getGame(Long gameId) throws Exception;

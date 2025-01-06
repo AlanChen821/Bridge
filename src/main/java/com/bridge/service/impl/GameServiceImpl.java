@@ -58,6 +58,14 @@ public class GameServiceImpl implements IGameService {
     }
 
     @Override
+    public Game createGame(String token, Game newGame) {
+        Player player = new Player(token);
+        String gameKey = RedisConstants.GAME_KEY;
+        Game targetGame = this.createNewGame(player, newGame.getRoomName());
+        return targetGame;
+    }
+
+    @Override
     public Game enterGame(String token, Long gameId, Game targetGame) throws Exception {
         //  db part
 //        Optional<Game> game = gameRepository.findById(targetGame.getId());
@@ -132,6 +140,14 @@ public class GameServiceImpl implements IGameService {
     private Game createNewGame(Player firstPlayer) {
         String gameKey = RedisConstants.GAME_KEY;
         Game newGame = new Game(firstPlayer);
+        RedisUtils.insertRedis(gameKey, String.valueOf(newGame.getId()), newGame);
+        return newGame;
+    }
+
+    private Game createNewGame(Player firstPlayer, String gameName) {
+        String gameKey = RedisConstants.GAME_KEY;
+        Game newGame = new Game(firstPlayer);
+        newGame.setRoomName(gameName);
         RedisUtils.insertRedis(gameKey, String.valueOf(newGame.getId()), newGame);
         return newGame;
     }
