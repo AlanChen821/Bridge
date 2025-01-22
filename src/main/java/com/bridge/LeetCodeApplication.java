@@ -21,7 +21,10 @@ public class LeetCodeApplication {
 //        maxFrequency();
 
         //  Biweekly 147
-         hasMatch();
+//         hasMatch();
+
+        //  Weekly 433
+        subarraySum();
 	}
 
     public static int smallestNumber() {
@@ -133,6 +136,25 @@ public class LeetCodeApplication {
                 result = true;
 //                System.out.println("true");
 //                return true;
+            }
+        }
+
+        System.out.println(result);
+        return result;
+    }
+
+    public static int subarraySum() {
+        int[] nums = {2,3,1};
+//        int[] nums = {3,1,1,2};
+
+        int result = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+//            int[] subArray = new int[2];
+            int start = Math.max(0, i - nums[i]);
+//            int startIndex = nums[start];
+//            int endIndex = i;
+            for (int i2 = start; i2 <= i; i2++) {
+                result += nums[i2];
             }
         }
 
