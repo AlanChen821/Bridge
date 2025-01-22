@@ -1,7 +1,10 @@
 package com.bridge.controller;
 
+import com.bridge.entity.Call;
 import com.bridge.entity.Game;
+import com.bridge.entity.Play;
 import com.bridge.service.IGameService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("game")
+@RequestMapping("games")
 public class GameController {
 
     private final IGameService gameService;
@@ -43,23 +46,19 @@ public class GameController {
         return new ResponseEntity<>(gameList, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<Game> enterGame(@RequestHeader HttpHeaders headers, @RequestBody Game targetGame) {
+    @PutMapping("/{gameId}/players")
+    public ResponseEntity<Game> enterGame(@RequestHeader HttpHeaders headers,
+                                          @PathVariable Long gameId,
+                                          @RequestBody Game targetGame) {
         List<String> tokens = headers.get("token");
         if (null == tokens || tokens.isEmpty()) {
             log.error("Receive request whose token is null/empty.");
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-        List<String> gameIds = headers.get("gameId");
-        if (Objects.isNull(gameIds) || gameIds.isEmpty()) {
-            log.error("Receive request whose gameId is null/empty.");
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        }
 
-        List<Long> gameId = gameIds.stream().map(Long::parseLong).collect(Collectors.toList());
         Game enteredGame;
         try {
-            enteredGame = gameService.enterGame(tokens.get(0), gameId.get(0), targetGame);
+            enteredGame = gameService.enterGame(tokens.get(0), gameId, targetGame);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -78,5 +77,49 @@ public class GameController {
         }
 
         return new ResponseEntity<>(targetGame, HttpStatus.OK);
+    }
+
+    @PostMapping("/{gameId}/call")
+    public ResponseEntity<Object> call(@RequestHeader HttpHeaders headers,
+                                       @PathVariable Long gameId,
+                                       @Valid @RequestBody Call call) {
+        try {
+            List<String> tokens = headers.get("token");
+            if (null == tokens || tokens.isEmpty()) {
+                return new ResponseEntity<>("No token.", HttpStatus.FORBIDDEN);
+            }
+
+            call.setPlayerId(tokens.get(0));
+            call.setGameId(gameId);
+            Game success = gameService.call(gameId, call);
+            return new ResponseEntity<>(success, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("exception : " + e);
+            return new ResponseEntity<>("Call failed.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{gameId}/play")
+    public ResponseEntity<Object> play(@RequestHeader HttpHeaders headers,
+                                       @PathVariable Long gameId,
+                                       @RequestBody Play currentPlay) {
+        try {
+            List<String> tokens = headers.get("token");
+            if (null == tokens || tokens.isEmpty()) {
+                log.error("Receive request whose token is null/empty.");
+                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            }
+//            List<String> gameIds = headers.get("gameId");
+//            if (Objects.isNull(gameIds) || gameIds.isEmpty()) {
+//                log.error("Receive request whose gameId is null/empty.");
+//                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+//            }
+//            Game currentGame = gameService.get
+            Game currentGame = gameService.play(tokens.get(0), gameId, currentPlay);
+            return new ResponseEntity<>(currentGame, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("Exception : " + e);
+            return new ResponseEntity<>("play failed.", HttpStatus.BAD_REQUEST);
+        }
     }
 }
