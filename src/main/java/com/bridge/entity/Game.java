@@ -61,8 +61,5 @@ public class Game {
 
     public void addNewPlayer(Player newPlayer) {
         this.players.add(newPlayer);
-        if (this.players.size() == 4) {
-            this.setStatus(GameStatus.CALLING);
-        }
     }
 }

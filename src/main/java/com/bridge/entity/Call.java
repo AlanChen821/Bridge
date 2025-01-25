@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Call implements Serializable {
-    private String gameId; //  todo : both of gameId & playerId will be moved into token or other place.
+    private Long gameId; //  todo : both of gameId & playerId will be moved into token or other place.
 
     private String playerId;
 

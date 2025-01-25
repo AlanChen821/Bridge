@@ -41,6 +41,10 @@ public class RedisUtils {
         }
     }
 
+    public static Boolean checkKeyAndField(String key, Long field) {
+        return checkKeyAndField(key, String.valueOf(field));
+    }
+
     public static Boolean checkKeyAndField(String key, String field) {
         try (Jedis jedis = pool.getResource()) {
             Map<String, String> map = jedis.hgetAll(key);
@@ -61,6 +65,10 @@ public class RedisUtils {
         } catch (Exception ex) {
             log.warn("Insert into redis key : {} failed. Message : {}", key, ex.getMessage(), ex);
         }
+    }
+
+    public static void insertRedis(String key, Long field, Object object) {
+        insertRedis(key, String.valueOf(field), object);
     }
 
     public static void insertRedis(String key, String field, Object object) {
@@ -84,6 +92,10 @@ public class RedisUtils {
             log.warn("Get key {} to class {} from Redis failed.", key, clazz);
             return null;
         }
+    }
+
+    public static <T> T getFromRedis(String key, Long field, Type clazz) {
+        return getFromRedis(key, String.valueOf(field), clazz);
     }
 
     public static <T> T getFromRedis(String key, String field, Type clazz) {
