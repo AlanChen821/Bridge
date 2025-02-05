@@ -74,7 +74,7 @@ public class GameServiceImpl implements IGameService {
     }
 
     @Override
-    public Game enterGame(String token, Long gameId, Game targetGame) throws Exception {
+    public Game enterGame(String token, Long gameId) throws Exception {
         //  db part
 //        Optional<Game> game = gameRepository.findById(targetGame.getId());
 
@@ -97,7 +97,7 @@ public class GameServiceImpl implements IGameService {
                 enteredGame.addNewPlayer(player);
                 RedisUtils.insertRedis(gameKey, gameId.toString(), enteredGame);
             } else {
-                String message = String.format("Specified game %s doesn't exist.", targetGame.getId());
+                String message = String.format("Specified game %s doesn't exist.", gameId);
                 log.warn(message);
                 throw new Exception(message);
             }

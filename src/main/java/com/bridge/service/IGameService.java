@@ -12,7 +12,7 @@ public interface IGameService {
 
     Game createGame(String token, Game newGame);
 
-    Game enterGame(String token, Long gameId, Game targetGame) throws Exception;
+    Game enterGame(String token, Long gameId) throws Exception;
 
     Game getGame(Long gameId) throws Exception;
 
