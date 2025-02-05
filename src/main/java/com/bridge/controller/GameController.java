@@ -48,8 +48,7 @@ public class GameController {
 
     @PutMapping("/{gameId}/players")
     public ResponseEntity<Game> enterGame(@RequestHeader HttpHeaders headers,
-                                          @PathVariable Long gameId,
-                                          @RequestBody Game targetGame) {
+                                          @PathVariable Long gameId) {
         List<String> tokens = headers.get("token");
         if (null == tokens || tokens.isEmpty()) {
             log.error("Receive request whose token is null/empty.");
@@ -58,7 +57,7 @@ public class GameController {
 
         Game enteredGame;
         try {
-            enteredGame = gameService.enterGame(tokens.get(0), gameId, targetGame);
+            enteredGame = gameService.enterGame(tokens.get(0), gameId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
