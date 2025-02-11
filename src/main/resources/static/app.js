@@ -61,6 +61,16 @@ stompClient.onStompError = (frame) => {
     console.error('Additional details: ' + frame.body);
 };
 
+function subscribeToPlayer(playerId) {
+    const playerTopic = `/topic/entry${playerId}`;
+
+    stompClient.subscribe(playerTopic, (message) => {
+        console.log(`Received message from ${playerTopic}: ` + message.body);
+    });
+
+    console.log(`Subscribed to ${playerTopic}`);
+}
+
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
@@ -96,6 +106,8 @@ function login() {
         destination: "/app/login",
         body: JSON.stringify({'id': $("#id").val()})
     });
+    showLogin($("#id").val());
+    subscribeToPlayer($("#id").val());
 }
 
 function showGreeting(message) {
