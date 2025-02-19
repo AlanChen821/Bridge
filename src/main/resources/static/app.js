@@ -62,13 +62,21 @@ stompClient.onStompError = (frame) => {
 };
 
 function subscribeToPlayer(playerId) {
-    const playerTopic = `/topic/entry${playerId}`;
+    const playerTopic = `/topic/entry/${playerId}`;
 
     stompClient.subscribe(playerTopic, (message) => {
         console.log(`Received message from ${playerTopic}: ` + message.body);
     });
 
     console.log(`Subscribed to ${playerTopic}`);
+
+    const beginTopic = `/topic/begin/${playerId}`;
+
+        stompClient.subscribe(beginTopic, (message) => {
+            console.log(`Received message from ${beginTopic}: ` + message.body);
+        });
+
+    console.log(`Subscribed to ${beginTopic}`);
 }
 
 function setConnected(connected) {

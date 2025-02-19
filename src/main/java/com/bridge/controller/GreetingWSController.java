@@ -72,6 +72,6 @@ public class GreetingWSController {
                 .message("new player " + playerId + " has entered the room ")
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
-        simpMessagingTemplate.convertAndSend(TOPIC_ENTRY + playerId, JsonUtils.serialize(websocketNotifyEntry));
+        simpMessagingTemplate.convertAndSend(TOPIC_ENTRY + "/" + playerId, JsonUtils.serialize(websocketNotifyEntry));
     }
 }
