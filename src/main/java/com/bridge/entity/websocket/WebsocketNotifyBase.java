@@ -14,5 +14,5 @@ public abstract class WebsocketNotifyBase {
 
     protected String message;
 
-    protected Timestamp createTime;
+    protected Timestamp createTime = new Timestamp(System.currentTimeMillis());
 }

@@ -124,6 +124,19 @@ public class GameServiceImpl implements IGameService {
                 .build();
         simpMessagingTemplate.convertAndSend(TOPIC_ENTRY, JsonUtils.serialize(websocketNotifyEntry));
 
+        if (enteredGame.getPlayers().size() == 4) {
+            Player roomMaster = enteredGame.getPlayers().get(0);
+            WebsocketNotifyEntry websocketNotifyReady = WebsocketNotifyEntry.builder()
+                    .type(WebsocketNotifyType.READY)
+                    .message("new player " + player.getAccount() + " has entered the room " + enteredGame.getRoomName())
+                    .createTime(new Timestamp(System.currentTimeMillis()))
+                    .build();
+            //  test
+            roomMaster.setId(1L);
+            simpMessagingTemplate.convertAndSend(TOPIC_BEGIN + "/" + roomMaster.getId(), JsonUtils.serialize(websocketNotifyReady));
+
+        }
+
         return enteredGame;
     }
 
