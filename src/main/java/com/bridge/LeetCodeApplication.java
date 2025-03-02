@@ -24,7 +24,10 @@ public class LeetCodeApplication {
 //         hasMatch();
 
         //  Weekly 433
-        subarraySum();
+//        subarraySum();
+
+        //  Biweekly 151
+        transformArray();
 	}
 
     public static int smallestNumber() {
@@ -160,5 +163,32 @@ public class LeetCodeApplication {
 
         System.out.println(result);
         return result;
+    }
+
+    public static int[] transformArray() {
+//        int[] nums = { 4,3,2,1 };
+        int[] nums = {1,5,1,4,2};
+
+        int size = nums.length;
+        int[] results = new int[size];
+
+        int evenCount = 0;
+        for (int i = 0; i < size; i++) {
+            if (nums[i] % 2 == 0) {
+                evenCount++;
+            }
+        }
+
+        for (int i = 0; i < size; i++) {
+            if (i < evenCount) {
+                results[i] = 0;
+            } else {
+                results[i] = 1;
+            }
+
+            System.out.println(results[i]);
+        }
+
+        return results;
     }
 }
