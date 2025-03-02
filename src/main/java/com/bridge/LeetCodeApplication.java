@@ -3,9 +3,7 @@ package com.bridge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootApplication
 @Slf4j
@@ -27,7 +25,10 @@ public class LeetCodeApplication {
 //        subarraySum();
 
         //  Biweekly 151
-        transformArray();
+//        transformArray();
+
+        //  weekly 439
+        largestInteger();
 	}
 
     public static int smallestNumber() {
@@ -190,5 +191,83 @@ public class LeetCodeApplication {
         }
 
         return results;
+    }
+
+    public static int largestInteger() {
+//        int[] nums = {3,9,2,1,7};
+//        int k = 3;
+//        int[] nums = {3,9,7,2,1,7};
+//        int k = 4;
+        int[] nums = {0,0};
+        int k = 1;
+//        k = 2;
+//        int[] nums = {0,50};
+//        int k = 1;
+
+        // brute force
+        Map<Integer, Integer> appear = new HashMap<>();
+        for (int i = 0; i < nums.length - k + 1; i++) {
+            Set<Integer> hasCount = new HashSet<>();
+            for (int j = i; j < i + k; j++) {
+                int key = nums[j];
+                if (hasCount.contains(key)) {
+                } else {
+                    if (appear.containsKey(key)) {
+                        appear.put(key, appear.get(key) + 1);
+                    } else {
+                        appear.put(key, 1);
+                    }
+                    hasCount.add(key);
+                }
+            }
+        }
+
+        int result = -1;
+        for (Map.Entry<Integer, Integer> entry : appear.entrySet()) {
+            if (entry.getValue() == 1) {
+                result = Math.max(result, entry.getKey());
+            }
+        }
+
+//        //  smarter
+//        int length = nums.length;
+//        int candidate = (length - k) / 2;
+//        Set removeSet = new HashSet();
+//        for (int i = candidate; i < length - candidate; i++) {
+//            removeSet.add(nums[i]);
+//        }
+//
+////        candidate = candidate == 0 ? 1 : candidate;
+//        int result = -1;
+//        if (length == k) {
+//            for (int i = 0; i < length; i++) {
+//                result = Math.max(result, nums[i]);
+//            }
+//        } else {
+//            for (int i = 0; i < candidate; i++) {
+//                if (removeSet.contains(nums[i])) {
+//                    continue;
+//                }
+//                result = Math.max(result, nums[i]);
+//            }
+//
+//            for (int i = length - candidate; i < length; i++) {
+//                if (removeSet.contains(nums[i])) {
+//                    continue;
+//                }
+//                result = Math.max(result, nums[i]);
+//            }
+//        }
+
+        System.out.println(result);
+        return result;
+    }
+
+    public static int longestPalindromicSubsequence() {
+        String s = "abced";
+        int k = 2;
+
+        int result = -1;
+        return result;
     }
 }
