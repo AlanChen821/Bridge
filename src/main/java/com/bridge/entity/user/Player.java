@@ -2,6 +2,7 @@ package com.bridge.entity.user;
 
 import com.bridge.entity.card.Card;
 import jakarta.persistence.ManyToOne;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.List;
 
+@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +25,15 @@ public class Player implements Serializable {
     private String accountMd5;
 
     private String accountBase64;
+
+    private String password;
+
+    private String name;
+
+    /**
+     * @see com.bridge.enumeration.PlayerType
+     */
+    private Integer type;
 
     private List<Card> cards;
 
@@ -41,5 +52,15 @@ public class Player implements Serializable {
 
         final Base64.Encoder encoder = Base64.getEncoder();
 
+    }
+
+    public void encryptPassword() {
+        byte[] bytesOfPassword;
+        try {
+            bytesOfPassword = this.password.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        this.password = DigestUtils.md5DigestAsHex(bytesOfPassword);
     }
 }
