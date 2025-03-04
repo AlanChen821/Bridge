@@ -7,6 +7,8 @@ import com.bridge.service.IPlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class PlayerServiceImpl implements IPlayerService {
@@ -27,8 +29,8 @@ public class PlayerServiceImpl implements IPlayerService {
     }
 
     @Override
-    public Player searchPlayer(Long id, String account, String name) {
-        Player player = playerMapper.searchPlayer(id, account, name);
-        return player;
+    public List<Player> searchPlayers(Long id, String account, String name, Integer type) {
+        List<Player> players = playerMapper.searchPlayers(id, account, name, type);
+        return players;
     }
 }

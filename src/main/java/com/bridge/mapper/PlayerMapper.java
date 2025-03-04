@@ -3,6 +3,8 @@ package com.bridge.mapper;
 import com.bridge.entity.user.Player;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface PlayerMapper {
 
@@ -11,8 +13,9 @@ public interface PlayerMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertPlayer(Player player);
 
-    Player searchPlayer(@Param("id") Long id,
-                        @Param("account") String account,
-                        @Param("name") String name
+    List<Player> searchPlayers(@Param("id") Long id,
+                               @Param("account") String account,
+                               @Param("name") String name,
+                               @Param("type") Integer type
     );
 }
