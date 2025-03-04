@@ -4,7 +4,7 @@
 
 <mapper namespace="com.bridge.mapper.PlayerMapper">
 
-    <select id="searchPlayer" resultType="com.bridge.entity.user.Player">
+    <select id="searchPlayers" resultType="com.bridge.entity.user.Player">
         SELECT * FROM player
         <where>
             <if test="id != null">
@@ -15,6 +15,9 @@
             </if>
             <if test="name != null">
                 AND name ILIKE #{name}
+            </if>
+            <if test="type != null">
+                AND type = #{type}
             </if>
         </where>
     </select>

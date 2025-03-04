@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("players")
@@ -26,11 +28,12 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<Player> searchPlayer(@RequestParam(required = false) Long id,
-                                               @RequestParam(required = false) String account,
-                                               @RequestParam(required = false) String name) {
-        Player player = playerService.searchPlayer(id, account, name);
-        return new ResponseEntity<>(player, HttpStatus.OK);
+    public ResponseEntity<List<Player>> searchPlayer(@RequestParam(required = false) Long id,
+                                                     @RequestParam(required = false) String account,
+                                                     @RequestParam(required = false) String name,
+                                                     @RequestParam(required = false) Integer type) {
+        List<Player> players = playerService.searchPlayers(id, account, name, type);
+        return new ResponseEntity<>(players, HttpStatus.OK);
     }
 
 }
