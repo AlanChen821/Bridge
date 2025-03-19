@@ -28,7 +28,10 @@ public class LeetCodeApplication {
 //        transformArray();
 
         //  weekly 439
-        largestInteger();
+//        largestInteger();
+
+//        Biweekly 152
+        totalNumbers();
 	}
 
     public static int smallestNumber() {
@@ -269,5 +272,46 @@ public class LeetCodeApplication {
 
         int result = -1;
         return result;
+    }
+
+    public static void totalNumbers() {
+//        int[] digits = {1, 2, 3, 4};
+//        int[] digits = {0, 2, 2};
+//        int[] digits = {6, 6, 6};
+        int[] digits = {1, 3, 5};
+
+        Set<Integer> nums = new HashSet<>();
+        int length = digits.length;
+        int result = 0;
+        for (int i = 0; i < length; i++) {
+            if (digits[i] == 0) {
+                continue;
+            }
+            for (int j = 0; j < length; j++) {
+                if (j == i) continue;
+                for (int k = 0; k < length; k++) {
+                    if (k == i || k == j) continue;
+                    if (digits[k] % 2 == 0) {
+                        int num = digits[i] * 100 + digits[j] * 10 + digits[k];
+                        nums.add(num);
+                    }
+                }
+            }
+        }
+//        for (int i = 0; i < length - 2; i++) {
+//            if (digits[i] == 0) {
+//                continue;
+//            }
+//            for (int j = i + 1; j < length - 1; j++) {
+//                for (int k = j + 1; k < length; k++) {
+//                    if (digits[k] % 2 == 0) {
+//                        int num = digits[i] * 100 + digits[j] * 10 + digits[k];
+//                        nums.add(num);
+//                    }
+//                }
+//            }
+//        }
+
+        System.out.println("count : " + nums.size());
     }
 }
