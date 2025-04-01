@@ -31,7 +31,10 @@ public class LeetCodeApplication {
 //        largestInteger();
 
 //        Biweekly 152
-        totalNumbers();
+//        totalNumbers();
+
+        //  Weekly 422
+        maxContainers();
 	}
 
     public static int smallestNumber() {
@@ -313,5 +316,20 @@ public class LeetCodeApplication {
 //        }
 
         System.out.println("count : " + nums.size());
+    }
+
+    public static int maxContainers() {
+        int n = 2;
+        n = 3;
+        int w = 3;
+        w = 5;
+        int maxWeight = 15;
+        maxWeight = 20;
+
+        int result = maxWeight / w;
+        result = result > n * n ? n * n : result;
+
+        System.out.println(result);
+        return result;
     }
 }
