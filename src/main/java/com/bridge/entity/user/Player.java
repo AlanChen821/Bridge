@@ -39,6 +39,8 @@ public class Player implements Serializable {
 
     private Integer points;
 
+    private String token;
+
     public Player(String account) {
         this.account = account;
         byte[] bytesOfMessage = new byte[0];

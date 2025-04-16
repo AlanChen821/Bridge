@@ -6,8 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -28,10 +31,14 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Player>> searchPlayer(@RequestParam(required = false) Long id,
+    public ResponseEntity<List<Player>> searchPlayer(Authentication auth,
+                            @RequestParam(required = false) Long id,
                                                      @RequestParam(required = false) String account,
                                                      @RequestParam(required = false) String name,
                                                      @RequestParam(required = false) Integer type) {
+        String accountInToken = (String) auth.getPrincipal();
+        Collection<? extends GrantedAuthority> roles = auth.getAuthorities();
+
         List<Player> players = playerService.searchPlayers(id, account, name, type);
         return new ResponseEntity<>(players, HttpStatus.OK);
     }
