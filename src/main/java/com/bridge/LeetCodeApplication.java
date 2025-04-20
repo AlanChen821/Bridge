@@ -34,7 +34,12 @@ public class LeetCodeApplication {
 //        totalNumbers();
 
         //  Weekly 422
-        maxContainers();
+//        maxContainers();
+
+        //  Weekly 446
+        calculateScore();
+
+
 	}
 
     public static int smallestNumber() {
@@ -331,5 +336,57 @@ public class LeetCodeApplication {
 
         System.out.println(result);
         return result;
+    }
+
+    public static long calculateScore() {
+        String[] instructions = new String[]
+//                {"jump","add","add","jump","add","jump"};
+                {"jump","add","add"};
+
+        int[] values = new int[]
+//                {2,1,3,1,-2,-3};
+                {3, 1, 1};
+
+        Set<Integer> visited = new HashSet<>();
+        long score = 0;
+        int currentIndex = 0;
+        int size = instructions.length;
+
+        while (currentIndex < size && !visited.contains(currentIndex) && currentIndex >= 0) {
+
+            visited.add(currentIndex);
+            String instruction = instructions[currentIndex];
+            long value = values[currentIndex];
+            switch (instruction) {
+                case "jump":
+                    currentIndex += value;
+                    break;
+                case "add":
+                    currentIndex++;
+                    score += value;
+                    break;
+            }
+        }
+
+        System.out.println(score);
+        return score;
+    }
+
+    public static int maximumPossibleSize() {
+        int[] nums = new int[] {4,2,5,3,5};
+
+
+    }
+
+    private static int maximumPossibleSizeDetail(int[] nums, int currentResult) {
+        if (nums.length < 2) {
+            return nums.length;
+        }
+
+        int lastIndex = nums.length - 1;
+        //  compare the nums[last] & the nums[last-1] value. -> compare the first 2 elements.
+        if (nums[lastIndex] >= nums[lastIndex - 1]) {
+            return
+        }
     }
 }
