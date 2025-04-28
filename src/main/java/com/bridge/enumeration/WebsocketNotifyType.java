@@ -1,10 +1,16 @@
 package com.bridge.enumeration;
 
 public enum WebsocketNotifyType {
-    ENTRY,
-    READY,
-    BEGIN,
-    SHUFFLE,
-    CALL,
-    PLAY
+    ENTRY("/topic/entry"),
+    READY("/topic/begin"),
+    BEGIN("/topic/begin"),
+    SHUFFLE("/topic/shuffle"),
+    CALL("/topic/call"),
+    PLAY("/topic/play");
+
+    public final String destination;
+
+    WebsocketNotifyType(String destination) {
+        this.destination = destination;
+    }
 }

@@ -63,20 +63,34 @@ stompClient.onStompError = (frame) => {
 
 function subscribeToPlayer(playerId) {
     const playerTopic = `/topic/entry/${playerId}`;
-
     stompClient.subscribe(playerTopic, (message) => {
         console.log(`Received message from ${playerTopic}: ` + message.body);
     });
-
     console.log(`Subscribed to ${playerTopic}`);
 
     const beginTopic = `/topic/begin/${playerId}`;
-
-        stompClient.subscribe(beginTopic, (message) => {
-            console.log(`Received message from ${beginTopic}: ` + message.body);
-        });
-
+    stompClient.subscribe(beginTopic, (message) => {
+        console.log(`Received message from ${beginTopic}: ` + message.body);
+    });
     console.log(`Subscribed to ${beginTopic}`);
+
+    const shuffleTopic = `/topic/shuffle/${playerId}`;
+    stompClient.subscribe(shuffleTopic, (message) => {
+        console.log(`Received message from ${shuffleTopic}: ` + message.body);
+    });
+    console.log(`Subscribed to ${shuffleTopic}`);
+
+    const callTopic = `/topic/call/${playerId}`;
+    stompClient.subscribe(callTopic, (message) => {
+        console.log(`Received message from ${callTopic}: ` + message.body);
+    });
+    console.log(`Subscribed to ${callTopic}`);
+
+    const playTopic = `/topic/play/${playerId}`;
+    stompClient.subscribe(playTopic, (message) => {
+        console.log(`Received message from ${playTopic}: ` + message.body);
+    });
+    console.log(`Subscribed to ${playTopic}`);
 }
 
 function setConnected(connected) {
