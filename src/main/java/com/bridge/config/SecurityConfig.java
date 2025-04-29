@@ -1,6 +1,7 @@
 package com.bridge.config;
 
 import com.bridge.filter.JwtFilter;
+import com.bridge.utils.RedisUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,12 +24,23 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/players").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+        String needFilter = RedisUtils.getFromRedis("needFilter");
+        boolean enableJwt = Boolean.parseBoolean(needFilter);
+
+        HttpSecurity security = http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> {
+                    if (enableJwt) {
+                        auth.requestMatchers(HttpMethod.POST, "players").permitAll();
+                        auth.anyRequest().authenticated();
+                    } else {
+                        auth.anyRequest().permitAll();
+                    }
+                });
+
+        if (enableJwt) {
+            security.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        }
+
+        return security.build();
     }
 }
