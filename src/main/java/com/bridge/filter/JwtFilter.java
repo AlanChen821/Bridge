@@ -1,11 +1,13 @@
 package com.bridge.filter;
 
 import com.bridge.utils.JwtUtil;
+import com.bridge.utils.RedisUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -57,7 +59,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return excludedPaths.contains(request.getServletPath())
-                && request.getMethod().equalsIgnoreCase("POST");
+        String needFilter = RedisUtils.getFromRedis("needFilter");
+        if (Strings.isNotBlank(needFilter) &&
+                Boolean.parseBoolean(needFilter)) {
+            return excludedPaths.contains(request.getServletPath())
+                    && request.getMethod().equalsIgnoreCase("POST");
+        } else {
+            return true;
+        }
     }
 }

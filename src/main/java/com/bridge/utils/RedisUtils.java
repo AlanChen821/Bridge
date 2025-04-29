@@ -78,6 +78,12 @@ public class RedisUtils {
         }
     }
 
+    public static String getFromRedis(String key) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.get(key);
+        }
+    }
+
     public static <T> Map<String, T> getFromRedis(String key, Type clazz) {
         try (Jedis jedis = pool.getResource()) {
             Map<String, String> map = jedis.hgetAll(key);
