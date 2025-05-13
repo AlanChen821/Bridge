@@ -24,7 +24,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        String needFilter = RedisUtils.getFromRedis("needFilter");
+//        String needFilter = RedisUtils.getFromRedis("needFilter");
+        String needFilter = "false";
         boolean enableJwt = Boolean.parseBoolean(needFilter);
 
         HttpSecurity security = http.csrf(AbstractHttpConfigurer::disable)
