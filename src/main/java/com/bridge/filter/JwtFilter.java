@@ -59,8 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//        String needFilter = RedisUtils.getFromRedis("needFilter");
-        String needFilter = "false";
+        String needFilter = RedisUtils.getFromRedis("needFilter");
         if (Strings.isNotBlank(needFilter) &&
                 Boolean.parseBoolean(needFilter)) {
             return excludedPaths.contains(request.getServletPath())
