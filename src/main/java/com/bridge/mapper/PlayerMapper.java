@@ -17,6 +17,14 @@ public interface PlayerMapper {
     @Select("SELECT * FROM player WHERE account = #{account}")
     Optional<Player> findPlayer(String account);
 
+    @Select(" SELECT " +
+            " * " +
+            " FROM player " +
+            " WHERE account = #{account} " +
+            " AND type = #{type} ")
+    Player searchPlayer(@Param("account") String account,
+                        @Param("type") Integer type);
+
     List<Player> searchPlayers(@Param("id") Long id,
                                @Param("account") String account,
                                @Param("name") String name,

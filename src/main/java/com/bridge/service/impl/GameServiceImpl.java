@@ -14,6 +14,8 @@ import com.bridge.entity.websocket.WebsocketNotifyPlay;
 import com.bridge.enumeration.GameStatus;
 import com.bridge.enumeration.WebsocketNotifyType;
 import com.bridge.mapper.GameMapper;
+import com.bridge.mapper.GamePlayerRelationMapper;
+import com.bridge.mapper.PlayerMapper;
 import com.bridge.repository.GameRepository;
 import com.bridge.service.IGameService;
 import com.bridge.service.IShuffleService;
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -48,10 +51,16 @@ public class GameServiceImpl implements IGameService {
 
     private final GameMapper gameMapper;
 
-    public GameServiceImpl(SimpMessagingTemplate simpMessagingTemplate, IShuffleService shuffleService, GameMapper gameMapper) {
+    private final PlayerMapper playerMapper;
+
+    private final GamePlayerRelationMapper gamePlayerRelationMapper;
+
+    public GameServiceImpl(SimpMessagingTemplate simpMessagingTemplate, IShuffleService shuffleService, GameMapper gameMapper, PlayerMapper playerMapper, GamePlayerRelationMapper gamePlayerRelationMapper) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.shuffleService = shuffleService;
         this.gameMapper = gameMapper;
+        this.playerMapper = playerMapper;
+        this.gamePlayerRelationMapper = gamePlayerRelationMapper;
     }
 
     @Override
@@ -67,22 +76,42 @@ public class GameServiceImpl implements IGameService {
         }
 
         List<Game> gameList = gameMapper.getList();
+        log.info("GameList in db : " + gameList);
 
 //        gameRepository.findAll();
         return results; 
     }
 
     @Override
+    @Transactional
     public Game createGame(String token, Game newGame) {
         Player player = new Player(token);
+        player = playerMapper.searchPlayer(token, 1);
         String gameKey = RedisConstants.GAME_KEY;
-        Game targetGame = this.createNewGame(player, newGame.getRoomName());
+
+        Game targetGame = new Game(player);
+        newGame.setRoomName(newGame.getRoomName());
+
+        gameMapper.insertGame(newGame);
+//        Game targetGame = this.createNewGame(player, newGame.getRoomName());
+        gamePlayerRelationMapper.insertGamePlayerRelation(newGame.getId(), player.getId(), 1, true);
+
         return targetGame;
+    }
+
+    private Game createNewGame(Player firstPlayer, String gameName) {
+        String gameKey = RedisConstants.GAME_KEY;
+        Game newGame = new Game(firstPlayer);
+        newGame.setRoomName(gameName);
+
+        gameMapper.insertGame(newGame);
+//        RedisUtils.insertRedis(gameKey, String.valueOf(newGame.getId()), newGame);
+        return newGame;
     }
 
     @Override
     public Game enterGame(String token, Long gameId) throws Exception {
-        //  db part
+        //  JPA
 //        Optional<Game> game = gameRepository.findById(targetGame.getId());
 
         //  check whether the game exists or not.
@@ -116,11 +145,10 @@ public class GameServiceImpl implements IGameService {
 //            this.gameRepository.saveAndFlush(enteredGame);
         }
 
+//        JPA
 //        gameRepository.save(enteredGame);
 
 //        int result = gameParameterJdbcTemplate.queryForObject("SELECT * from game", Game.class);
-
-//        List<Game> list = gameMapper.getList();
 
         log.info("Player {} has entered game {}.", player.getAccount(), enteredGame.getId());
 
@@ -154,14 +182,6 @@ public class GameServiceImpl implements IGameService {
         return newGame;
     }
 
-    private Game createNewGame(Player firstPlayer, String gameName) {
-        String gameKey = RedisConstants.GAME_KEY;
-        Game newGame = new Game(firstPlayer);
-        newGame.setRoomName(gameName);
-        RedisUtils.insertRedis(gameKey, String.valueOf(newGame.getId()), newGame);
-        return newGame;
-    }
-
     @Override
     public Game getGame(Long gameId) throws Exception {
         String gameKey = RedisConstants.GAME_KEY;
@@ -178,7 +198,7 @@ public class GameServiceImpl implements IGameService {
     }
 
     @Override
-    public Game changeGameStatus(Long gameId, GameStatus gameStatus) throws Exception {
+    public Game changeGameStatus(Long gameId, Integer gameStatus) throws Exception {
         Game targetGame = this.getGame(gameId);
 
         if (null == targetGame) {
@@ -193,9 +213,10 @@ public class GameServiceImpl implements IGameService {
             RedisUtils.insertRedis(gameKey, gameId.toString(), targetGame);
         }
 
-        switch (gameStatus) {
+        GameStatus gameStatusEnum = GameStatus.getByCode(gameStatus).orElseThrow();
+        switch (gameStatusEnum) {
             case START:
-                targetGame.setStatus(GameStatus.CALLING);
+                targetGame.setStatus(GameStatus.CALLING.getCode());
                 RedisUtils.insertRedis(gameKey, String.valueOf(targetGame.getId()), targetGame);
 
                 WebsocketNotifyBegin notifyBegin = WebsocketNotifyBegin.builder()
@@ -241,7 +262,7 @@ public class GameServiceImpl implements IGameService {
                             log.info("All other players have passed, let the game begin!");
                             game.setTrump(lastValidCall.getCallType());
                             game.setLevel(lastValidCall.getNumber());
-                            game.setStatus(GameStatus.PLAYING);
+                            game.setStatus(GameStatus.PLAYING.getCode());
                         } else {
                             log.info("Player " + currentCall.getPlayerId() + " has called type " + currentCall.getCallType() + " with number " + currentCall.getNumber());
                         }

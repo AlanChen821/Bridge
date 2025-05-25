@@ -39,7 +39,10 @@ public class Game {
     @Transient
     private List<Call> callHistory;
 
-    private GameStatus status;
+    /**
+     * @see com.bridge.enumeration.GameStatus
+     */
+    private Integer status;
     private String createTime;
 
     @Transient
@@ -49,7 +52,7 @@ public class Game {
         this.id = System.currentTimeMillis();
         this.players = new ArrayList<>();
         this.createTime = LocalDateTimeUtils.getStringOfNow();
-        this.status = GameStatus.WAITING;
+        this.status = GameStatus.WAITING.getCode();
 
     }
 
