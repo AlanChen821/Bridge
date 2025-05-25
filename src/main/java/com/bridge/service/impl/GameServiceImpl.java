@@ -205,7 +205,7 @@ public class GameServiceImpl implements IGameService {
                 simpMessagingTemplate.convertAndSend(TOPIC_BEGIN, JsonUtils.serialize(notifyBegin));
 
                 log.info("Start to shuffle...");
-                shuffleService.shuffle();
+                shuffleService.shuffle(targetGame);
                 break;
         }
 
