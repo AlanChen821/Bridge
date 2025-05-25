@@ -7,6 +7,7 @@ import java.util.List;
 
 @SuperBuilder
 public class WebsocketNotifyShuffle extends WebsocketNotifyBase {
+    List<Card> currentPlayerCards;
 
     List<Card> player1Cards;
     List<Card> player2Cards;

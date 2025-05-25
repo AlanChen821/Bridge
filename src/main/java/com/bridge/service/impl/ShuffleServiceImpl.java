@@ -1,6 +1,7 @@
 package com.bridge.service.impl;
 
 import com.bridge.constant.WebsocketDestination;
+import com.bridge.entity.Game;
 import com.bridge.entity.websocket.WebsocketNotifyShuffle;
 import com.bridge.enumeration.WebsocketNotifyType;
 import com.bridge.service.IShuffleService;
@@ -34,67 +35,64 @@ public class ShuffleServiceImpl implements IShuffleService {
     }
 
     @Override
+    public void shuffle(Game game) {
+        this.shuffle(game.getPlayers().get(0).getId(),
+                game.getPlayers().get(1).getId(),
+                game.getPlayers().get(2).getId(),
+                game.getPlayers().get(3).getId());
+    }
+
+    @Override
     public List<Player> shuffle(Long player1Id, Long player2Id, Long player3Id, Long player4Id) {
         log.info("Start new game, shuffling...");
         List<Player> result = new ArrayList<>();
-//        do {
-        List<Integer> numbers = IntStream.rangeClosed(0, 51).boxed().collect(Collectors.toList());
 
+        //  generate the cards randomly
+        List<Integer> numbers = IntStream.rangeClosed(0, 51).boxed().collect(Collectors.toList());
         Collections.shuffle(numbers);
 
-        List<Card> player0Cards = parseCards(numbers, 0);
-        Player player0 = new Player();
-        player0.setId(0L);
-
-        player0.setCards(player0Cards);
-//        log.info(player0Cards.toString());
-        player0.setPoints(countPoints(player0Cards));
-
-        List<Card> player1Cards = parseCards(numbers, 1);
+        List<Card> player1Cards = parseCards(numbers, 0);
         Player player1 = new Player();
-        player0.setId(1L);
-
         player1.setCards(player1Cards);
-//        log.info(player1Cards.toString());
         player1.setPoints(countPoints(player1Cards));
+        sendCardsByWebSocket(player1Id, player1Cards);
 
-        List<Card> player2Cards = parseCards(numbers, 2);
+        List<Card> player2Cards = parseCards(numbers, 1);
         Player player2 = new Player();
-        player0.setId(2L);
-
         player2.setCards(player2Cards);
-//        log.info(player2Cards.toString());
         player2.setPoints(countPoints(player2Cards));
+        sendCardsByWebSocket(player2Id, player2Cards);
 
-        List<Card> player3Cards = parseCards(numbers, 3);
+        List<Card> player3Cards = parseCards(numbers, 2);
         Player player3 = new Player();
-        player0.setId(3L);
-
         player3.setCards(player3Cards);
-//        log.info(player3Cards.toString());
         player3.setPoints(countPoints(player3Cards));
+        sendCardsByWebSocket(player3Id, player3Cards);
 
-//        } while (true);
+        List<Card> player4Cards = parseCards(numbers, 3);
+        Player player4 = new Player();
+        player4.setCards(player4Cards);
+        player4.setPoints(countPoints(player4Cards));
+        sendCardsByWebSocket(player4Id, player4Cards);
 
-        result.add(player0);
         result.add(player1);
         result.add(player2);
         result.add(player3);
-
-        WebsocketNotifyShuffle websocketNotifyShuffle = WebsocketNotifyShuffle.builder()
-                .type(WebsocketNotifyType.SHUFFLE)
-                .player1Cards(player0Cards)
-                .player2Cards(player1Cards)
-                .player3Cards(player2Cards)
-                .player4Cards(player3Cards)
-                .createTime(new Timestamp(System.currentTimeMillis()))
-                .build();
-        simpMessagingTemplate.convertAndSend(WebsocketDestination.TOPIC_SHUFFLE, JsonUtils.serialize(websocketNotifyShuffle));
+        result.add(player4);
 
         return result;
     }
 
-    public List<Card> parseCards(List<Integer> numbers, int player) {
+    private void sendCardsByWebSocket(Long currentPlayerId, List<Card> currentPlayerCards) {
+        WebsocketNotifyShuffle websocketNotifyShuffle = WebsocketNotifyShuffle.builder()
+                .type(WebsocketNotifyType.SHUFFLE)
+                .currentPlayerCards(currentPlayerCards)
+                .createTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        simpMessagingTemplate.convertAndSend(WebsocketNotifyType.SHUFFLE.destination + "/" + currentPlayerId, JsonUtils.serialize(websocketNotifyShuffle));
+    }
+
+    private List<Card> parseCards(List<Integer> numbers, int player) {
         log.info("Player " + player + "'s cards : ");
         List<Card> playerCards = new ArrayList<>();
         int startIndex = player * 13;
@@ -110,7 +108,7 @@ public class ShuffleServiceImpl implements IShuffleService {
         return playerCards;
     }
 
-    public Integer countPoints(List<Card> cards) {
+    private Integer countPoints(List<Card> cards) {
         int totalPoints = 0;
         for (int i = 0; i < 13; i++) {
             int number = cards.get(i).getNumber();
