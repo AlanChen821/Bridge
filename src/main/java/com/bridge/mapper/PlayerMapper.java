@@ -4,6 +4,7 @@ import com.bridge.entity.user.Player;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface PlayerMapper {
@@ -12,6 +13,9 @@ public interface PlayerMapper {
             " (#{account}, #{password}, #{name}, #{type})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertPlayer(Player player);
+
+    @Select("SELECT * FROM player WHERE account = #{account}")
+    Optional<Player> findPlayer(String account);
 
     List<Player> searchPlayers(@Param("id") Long id,
                                @Param("account") String account,
