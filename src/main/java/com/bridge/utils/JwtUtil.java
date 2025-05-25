@@ -17,6 +17,8 @@ public class JwtUtil {
 
     private final String SECRET_KEY = "bridge_key_should_be_32_characters_long_enough";
 
+    private final int JWT_EXPIRATION_MS = 1000 * 60 * 60 * 10;  //  10 hours
+
     private Key getSigningKey() {
         byte[] keyBytes = SECRET_KEY.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -24,10 +26,10 @@ public class JwtUtil {
 
     public String generateToken(Player player) {
         return Jwts.builder()
-                .claim("account", player.getAccount())
+                .setSubject(player.getAccount())
                 .claim("type", player.getType())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))  //  10 hours
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_MS))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

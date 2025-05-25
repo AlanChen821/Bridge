@@ -37,8 +37,8 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 Claims claims = jwtUtil.extractClaims(jwt);
 //                request.setAttribute("claims", claims); //  Attach claims to the request for downstream access
-                String account = claims.get("account", String.class);
-                Integer type = claims.get("type", Integer.class);
+                String account = claims.getSubject();
+                Integer type = claims.get("type", Integer.class);   //  custom claim
 
                 //  Create Authentication object
                 List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + type));

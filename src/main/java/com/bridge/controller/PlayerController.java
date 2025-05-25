@@ -30,6 +30,12 @@ public class PlayerController {
         return new ResponseEntity<>(player, HttpStatus.OK);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Player loginRequest) {
+        Player loginResult = playerService.login(loginRequest);
+        return ResponseEntity.ok(loginResult);
+    }
+
     @GetMapping
     public ResponseEntity<List<Player>> searchPlayer(Authentication auth,
                             @RequestParam(required = false) Long id,
