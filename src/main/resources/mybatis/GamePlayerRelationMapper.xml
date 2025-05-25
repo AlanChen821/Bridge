@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bridge.mapper.GamePlayerRelationMapper">
+
+    <select id="insertGamePlayerRelation">
+        INSERT INTO game_player_relation (game_id, player_id, type, is_master)
+        VALUES (#{gameId}, #{playerId}, #{type}, #{isMaster})
+    </select>
+
+</mapper>

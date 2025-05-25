@@ -16,7 +16,7 @@ public interface IGameService {
 
     Game getGame(Long gameId) throws Exception;
 
-    Game changeGameStatus(Long gameId, GameStatus gameStatus) throws Exception;
+    Game changeGameStatus(Long gameId, Integer gameStatus) throws Exception;
 
     Game call(Long gameId, Call call) throws Exception;
 
