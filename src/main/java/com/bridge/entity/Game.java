@@ -49,7 +49,6 @@ public class Game {
     private String updateTime;
 
     public Game() {
-        this.id = System.currentTimeMillis();
         this.players = new ArrayList<>();
         this.createTime = LocalDateTimeUtils.getStringOfNow();
         this.status = GameStatus.WAITING.getCode();

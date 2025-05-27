@@ -67,19 +67,18 @@ public class GameServiceImpl implements IGameService {
     public List<Game> getGameList() {
         List<Game> results = null;
         
-        //  redis part
-        String gameKey = RedisConstants.GAME_KEY;
-        if (RedisUtils.checkKey(gameKey)) {
-            Map<String, Game> gameMap = RedisUtils.getFromRedis(gameKey, Game.class);
-            results = new ArrayList<Game>(gameMap.values());
-            
-        }
+//          redis part
+//        String gameKey = RedisConstants.GAME_KEY;
+//        if (RedisUtils.checkKey(gameKey)) {
+//            Map<String, Game> gameMap = RedisUtils.getFromRedis(gameKey, Game.class);
+//            results = new ArrayList<Game>(gameMap.values());
+//        }
 
         List<Game> gameList = gameMapper.getList();
         log.info("GameList in db : " + gameList);
 
 //        gameRepository.findAll();
-        return results; 
+        return gameList;
     }
 
     @Override
@@ -89,14 +88,15 @@ public class GameServiceImpl implements IGameService {
         player = playerMapper.searchPlayer(token, 1);
         String gameKey = RedisConstants.GAME_KEY;
 
-        Game targetGame = new Game(player);
-        newGame.setRoomName(newGame.getRoomName());
+//        Game targetGame = new Game(player);
+//        newGame.setRoomName(newGame.getRoomName());
 
         gameMapper.insertGame(newGame);
+        newGame.addNewPlayer(player);
 //        Game targetGame = this.createNewGame(player, newGame.getRoomName());
         gamePlayerRelationMapper.insertGamePlayerRelation(newGame.getId(), player.getId(), 1, true);
 
-        return targetGame;
+        return newGame;
     }
 
     private Game createNewGame(Player firstPlayer, String gameName) {
@@ -111,46 +111,45 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public Game enterGame(String token, Long gameId) throws Exception {
-        //  JPA
-//        Optional<Game> game = gameRepository.findById(targetGame.getId());
-
         //  check whether the game exists or not.
+        Game enteredGame = gameMapper.getGameById(gameId)
+                .orElseThrow(() -> {
+                    String message = "Can't find game : " + gameId;
+                    log.warn(message);
+                    return new RuntimeException(message);
+                });
+
 //        if (game.isEmpty()) {
 //            String message = String.format("Specified game %s doesn't exist.", targetGame.getId());
 //            log.warn(message);
 //            throw new Exception(message);
 //        }
-
-        Game enteredGame;
-//                = game.get();
         Player player = new Player(token);
 
 //          redis part
-        String gameKey = RedisConstants.GAME_KEY;
-        if (RedisUtils.checkKeyAndField(gameKey, gameId.toString())) {
-            enteredGame = RedisUtils.getFromRedis(gameKey, gameId.toString(), Game.class);
-            if (null != enteredGame) {
-                enteredGame.addNewPlayer(player);
-                RedisUtils.insertRedis(gameKey, gameId.toString(), enteredGame);
-            } else {
-                String message = String.format("Specified game %s doesn't exist.", gameId);
-                log.warn(message);
-                throw new Exception(message);
-            }
+//        String gameKey = RedisConstants.GAME_KEY;
+//        if (RedisUtils.checkKeyAndField(gameKey, gameId.toString())) {
+//            enteredGame = RedisUtils.getFromRedis(gameKey, gameId.toString(), Game.class);
+//            if (null != enteredGame) {
+//                enteredGame.addNewPlayer(player);
+//                RedisUtils.insertRedis(gameKey, gameId.toString(), enteredGame);
+//            } else {
+//                String message = String.format("Specified game %s doesn't exist.", gameId);
+//                log.warn(message);
+//                throw new Exception(message);
+//            }
+//
+////            this.gameRepository.saveAndFlush(enteredGame);
+//        } else {
+//            //  otherwise, attend to the existing room.
+//            enteredGame = this.createNewGame(player);
+//        }
 
-//            this.gameRepository.saveAndFlush(enteredGame);
-        } else {
-            //  otherwise, attend to the existing room.
-            enteredGame = this.createNewGame(player);
-//            this.gameRepository.saveAndFlush(enteredGame);
-        }
-
-//        JPA
-//        gameRepository.save(enteredGame);
-
-//        int result = gameParameterJdbcTemplate.queryForObject("SELECT * from game", Game.class);
+        player = playerMapper.searchPlayer(token, 1);
 
         log.info("Player {} has entered game {}.", player.getAccount(), enteredGame.getId());
+
+        gamePlayerRelationMapper.insertGamePlayerRelation(enteredGame.getId(), player.getId(), 1, false);
 
         WebsocketNotifyEntry websocketNotifyEntry = WebsocketNotifyEntry.builder()
                 .type(WebsocketNotifyType.ENTRY)
