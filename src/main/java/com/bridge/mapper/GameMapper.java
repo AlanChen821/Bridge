@@ -8,15 +8,16 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface GameMapper {
 
     @Select("SELECT * FROM game")
-    public List<Game> getList();
+    List<Game> getList();
 
-    @Insert("INSERT INTO game (status, trump, level, room_name) VALUES" +
-            " (#{status}, #{trump}, #{level}, #{roomName})")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
+    @Select("SELECT * FROM game WHERE id = #{gameId}")
+    Optional<Game> getGameById(Long gameId);
+
     void insertGame(Game game);
 }
