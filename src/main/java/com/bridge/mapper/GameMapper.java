@@ -16,7 +16,6 @@ public interface GameMapper {
     @Select("SELECT * FROM game")
     List<Game> getList();
 
-    @Select("SELECT * FROM game WHERE id = #{gameId}")
     Optional<Game> getGameById(Long gameId);
 
     void insertGame(Game game);
