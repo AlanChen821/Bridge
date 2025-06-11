@@ -4,6 +4,40 @@
 
 <mapper namespace="com.bridge.mapper.GameMapper">
 
+    <resultMap id="Player" type="com.bridge.entity.user.Player">
+        <id property="id" column="id" />
+        <result property="account" column="account"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <resultMap id="Game" type="com.bridge.entity.Game">
+        <id property="id" column="game_id"/>
+        <result property="roomName" column="room_name"/>
+
+        <collection property="players" ofType="com.bridge.entity.user.Player">
+            <id property="id" column="player_id" />
+            <result property="account" column="account" />
+            <result property="name" column="name" />
+        </collection>
+    </resultMap>
+
+    <select id="getGameById" resultMap="Game">
+        SELECT
+            g.id AS game_id,
+            g.room_name,
+            p.id AS player_id,
+            p.account,
+            p.name
+        FROM
+            game g
+        LEFT JOIN
+            game_player_relation gpr ON g.id = gpr.game_id
+        LEFT JOIN
+            player p ON gpr.player_id = p.id
+        WHERE
+            g.id = #{gameId}
+    </select>
+
     <insert id="insertGame" parameterType="com.bridge.entity.Game" useGeneratedKeys="false">
         <selectKey keyProperty="id" resultType="long" order="AFTER">
             SELECT currval(pg_get_serial_sequence('game', 'id'))

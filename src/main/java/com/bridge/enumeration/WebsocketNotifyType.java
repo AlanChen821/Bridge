@@ -13,4 +13,8 @@ public enum WebsocketNotifyType {
     WebsocketNotifyType(String destination) {
         this.destination = destination;
     }
+
+    public String getDestinationOfUser(Long userId) {
+        return this.destination + "/" + userId;
+    }
 }
